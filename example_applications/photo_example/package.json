@@ -1,0 +1,62 @@
+{
+    "name": "simple_imageviewer",
+    "version": "1.0.0",
+    "description": "Basic Image Viewer Application",
+    "main": "Simple-Image-Viewer-Application.js",
+    "scripts": {
+        "start": "node Simple-Image-Viewer-Application.js",
+        "build": "npx quack build && npx quack copy"
+    },
+    "author": "steven",
+    "license": "MIT",
+    "copyFilesSettings": {
+        "whenFileExists": "overwrite"
+    },
+    "copyFiles": [
+        {
+            "from": "./html/*",
+            "to": "./dist/"
+        },
+        {
+            "from": "./node_modules/@recogito/annotorious-openseadragon/dist/annotorious.min.css",
+            "to": "./dist/"
+        },
+        {
+            "from": "./node_modules/@recogito/annotorious-openseadragon/dist/openseadragon-annotorious.min.js",
+            "to": "./dist/"
+        },
+        {
+            "from": "./node_modules/@recogito/annotorious-openseadragon/dist/recogito-polyfills.js",
+            "to": "./dist/"
+        },
+        {
+            "from": "./node_modules/@recogito/annotorious-openseadragon/dist/openseadragon/**/*",
+            "to": "./dist/"
+        },
+        {
+            "from": "./node_modules/@recogito/annotorious-toolbar/dist/annotorious-toolbar.min.js",
+            "to": "./dist/"
+        },
+        {
+            "from": "./node_modules/@recogito/annotorious-selector-pack/dist/annotorious-selector-pack.js",
+            "to": "./dist/"
+        },
+        {
+            "from": "./node_modules/@recogito/annotorious-better-polygon/dist/annotorious-better-polygon.js",
+            "to": "./dist/"
+        },
+        {
+            "from": "../../node_modules/pict/dist/*",
+            "to": "./dist/"
+        }
+    ],
+    "dependencies": {
+        "pict": "^1.0.210",
+        "pict-application": "^1.0.19",
+        "pict-view": "^1.0.51",
+        "@recogito/annotorious-openseadragon": "^2.7.18",
+        "@recogito/annotorious-toolbar": "^1.2.1",
+        "@recogito/annotorious-better-polygon": "0.2.0",
+        "@recogito/annotorious-selector-pack": "0.6.1"
+    }
+}
