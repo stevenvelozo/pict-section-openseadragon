@@ -156,11 +156,6 @@ class PictSectionOpenSeaDragon extends libPictViewClass
 			tileSources: this.options.TileSources
 		};
 
-		// Settings for configuring Annotorious.
-		this.annoSettings = {
-			allowEmpty: true
-		};
-
 		// Color formatter for Annotorious. Works with the styleClass attribute and the color class system which is config based.
 		this.format = (annotation) => {
 			return 'pict-osd-' + (annotation?.underlying?.target?.styleClass || this.color || 'red');
@@ -199,11 +194,19 @@ class PictSectionOpenSeaDragon extends libPictViewClass
 		this.pict.ContentAssignment.assignContent('#ColorOverrides', colorStyles);
 
 		// We only need to instantiate Annotorious if a set of annotations were passed in, or annotation editing is enabled.
-		const editingEnabled = this.options.EnableAnnotation && this.toolbarElement;
-		if (editingEnabled || this.options.Annotations?.length)
+		this.editingEnabled = this.options.EnableAnnotation && this.toolbarElement;
+		if (this.editingEnabled || this.options.Annotations?.length)
 		{
+
+			// Settings for configuring Annotorious.
+			this.annoSettings = {
+				allowEmpty: true,
+				disableEditor: !this.editingEnabled,
+				disableSelect: !this.editingEnabled
+			};
+
 			// Instantiate Annotorious.
-			this.annotator = OpenSeadragon.Annotorious(this.viewer, this.annoSettings);
+			this.annotator = OpenSeadragon.Annotorious(this.viewer, this.annoSettings);	
 
 			// Apply the custom color formatter.
 			this.annotator.formatters = [this.format];
@@ -216,7 +219,7 @@ class PictSectionOpenSeaDragon extends libPictViewClass
 			Annotorious.BetterPolygon(this.annotator);
 
 			// If editing is enabled, reflow the ui to include the editing toolbar.
-			if (editingEnabled)
+			if (this.editingEnabled)
 			{
 				this.pict.ContentAssignment.addClass('#OpenSeaDragon-Element', 'osd-with-annotations');
 				this.pict.ContentAssignment.removeClass('#OSD-Toolbar', 'osd-height-zero');
@@ -240,7 +243,7 @@ class PictSectionOpenSeaDragon extends libPictViewClass
 			this.annotator.on('deleteAnnotation', (annotation) => { this.annotationDeleteHook(annotation); });
 
 			// If a custom color set was passed via config, add those custom colors to the toolbar if editing is enabled.
-			if (this.colorSet && editingEnabled)
+			if (this.colorSet && this.editingEnabled)
 			{
 				let colorSelectorTemplate = ``;
 				for (let color of Object.keys(this.colorSet))
@@ -420,7 +423,10 @@ class PictSectionOpenSeaDragon extends libPictViewClass
 	// Passes an annotation selection event onto the annotator plus does some extra handling to scroll it into view.
 	selectAnnotation(id)
 	{
-		this.annotator.selectAnnotation(id);
+		if (this.editingEnabled)
+		{
+			this.annotator.selectAnnotation(id);
+		}
 		for (let a of this.captureAnnotations())
 		{
 			if (a.id === id)
