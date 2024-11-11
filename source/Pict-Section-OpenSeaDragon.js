@@ -23,21 +23,34 @@ const default_configuration = {
 		{
 			"Hash": "OpenSeaDragon-Container",
 			"Template": html`
-				<div style="width: 100%; height: 100%; display: flex; flex-direction: row;" id="OSD-Containers-Wrapper">
-					<div style="width: 100%; height: 100%;" id="OSD-Container-Left">
-						<div id="OpenSeaDragon-Element" style="margin-left: 20px; margin-right: 5px; width: calc(100% - 25px); height: 100%;"></div>
-						<div id="OSD-Toolbar" class="osd-height-zero osd-toolbar">
-							<div id="DrawingToolbar" style="min-width: 320px" ></div>
-							<div id="ColorPickerToolbar" style="display: flex; flex-direction: row;"></div>
-						</div>
-					</div>
-					<div style="width: 20%; height: 100%;" class="osd-width-zero" id="OSD-Container-Right">
-						<div id="OSD-Scrollable-Comments" class="osd-scrollable-comments"></div>
+				<div class="osd-container-wrapper" id="OSD-Containers-Wrapper">
+					<div id="OpenSeaDragon-Element" class="osd-default"></div>
+					<div id="OSD-Toolbar" class="osd-height-zero osd-toolbar">
+						<div id="DrawingToolbar" class="osd-drawing-toolbar"></div>
+						<div id="ColorPickerToolbar" class="osd-color-picker-toolbar"></div>
 					</div>
 				</div>
 				<style id="ColorOverrides"></style>
 				<style id="SelectedColorOverride"></style>
 				<style id="OSDGeneralStyling">
+					.osd-container-wrapper {
+						width: 100%; 
+						height: 100%; 
+						display: flex; 
+						flex-direction: column;
+					}
+					.osd-drawing-toolbar {
+						min-width: 320px;
+					}
+					.osd-color-picker-toolbar {
+						display: flex; 
+						flex-direction: row;
+					}
+					.osd-default {
+						margin-left: 20px; 
+						height: 100%;
+						width: calc(100% - 25px);
+					}
 					.osd-scrollable-comments {
 						height: 100%;
 						width: 100%;
@@ -55,7 +68,7 @@ const default_configuration = {
 					.osd-width-zero {
 						width: 0px !important;
 					}
-					.color-button-class {
+					.osd-color-button-class {
 						margin:4px 4px 4px 0;
 						background-color: transparent;
 						cursor: pointer;
@@ -65,7 +78,7 @@ const default_configuration = {
 						height: 45px;
 						border: 0px;
 					}
-					.color-button-class:hover {
+					.osd-color-button-class:hover {
 						background-color:rgba(0,0,0,0.05);
 					}
 					.osd-toolbar {
@@ -77,6 +90,20 @@ const default_configuration = {
 					}
 					.osd-annotations-panel-open {
 						width: 80% !important
+					}
+					.osd-editable-text {
+						border-top: 1px solid lightgrey; 
+						max-height: fit-content;
+					}
+					.osd-editor-inner {
+						-webkit-box-shadow: none; 
+						-moz-box-shadow: none; 
+						box-shadow: none; 
+						border-radius: 4px; 
+						border: 1px solid lightgrey;
+					}
+					.osd-comment-holder {
+						z-index: auto; line-height: normal; cursor: pointer; max-width: 100%; opacity: 1; position: relative !important; margin: 10px 0px 10px 0px;
 					}
 				</style>
 			`
@@ -115,16 +142,6 @@ class PictSectionOpenSeaDragon extends libPictViewClass
 
 	onAfterRender()
 	{
-		if (!this.initialRenderComplete)
-		{
-			this.onAfterInitialRender();
-			this.initialRenderComplete = true;
-		}
-	}
-
-	onAfterInitialRender()
-	{
-
 		let tmpTargetElementSet = this.services.ContentAssignment.getElement('#OpenSeaDragon-Element');
 		if (tmpTargetElementSet.length < 1)
 		{
@@ -164,6 +181,10 @@ class PictSectionOpenSeaDragon extends libPictViewClass
 		this.customConfigureViewerSettings();
 
 		// Instantiate the OpenSeaDragon element.
+		if (this.viewer)
+		{
+			this.viewer.destroy();
+		}
 		this.viewer = OpenSeadragon(this.osdSettings);
 
 		// Inject a stylesheet based on the set of colors passed into the component.
@@ -204,6 +225,10 @@ class PictSectionOpenSeaDragon extends libPictViewClass
 				disableEditor: !this.editingEnabled,
 				disableSelect: !this.editingEnabled
 			};
+
+			if (this.annotator){
+				this.annotator.destroy();
+			}
 
 			// Instantiate Annotorious.
 			this.annotator = OpenSeadragon.Annotorious(this.viewer, this.annoSettings);	
@@ -249,7 +274,7 @@ class PictSectionOpenSeaDragon extends libPictViewClass
 				for (let color of Object.keys(this.colorSet))
 				{
 					colorSelectorTemplate += html`
-						<button type="button" class="color-button-class" onclick="_Pict.views.${ this.options.ViewAddress || 'OSDSection' }.assignColor('${ color }')" id="ColorSelector${ color }" style="color: ${ this.colorSet[color] };">&#11044;</button>
+						<button type="button" class="osd-color-button-class" onclick="_Pict.views.${ this.options.ViewAddress || 'OSDSection' }.assignColor('${ color }')" id="ColorSelector${ color }" style="color: ${ this.colorSet[color] };">&#11044;</button>
 					`;
 				}
 				this.pict.ContentAssignment.assignContent('#ColorPickerToolbar', `
@@ -358,7 +383,7 @@ class PictSectionOpenSeaDragon extends libPictViewClass
 				if (b.purpose === 'commenting')
 				{
 					bodyCommentTemplate += html`
-						<div class="r6o-editable-text" style="border-top: 1px solid lightgrey; max-height: fit-content;">
+						<div class="r6o-editable-text osd-editable-text">
 							${ b.value }
 						</div>
 					`;
@@ -395,8 +420,8 @@ class PictSectionOpenSeaDragon extends libPictViewClass
 					`;
 				}
 				commentsTemplate += html`
-					<div class="r6o-editor r6o-arrow-top r6o-arrow-left pushed right" onclick="_Pict.views.${ this.options.ViewAddress || 'OSDSection' }.selectAnnotation('${ a.id }')" style="z-index: auto; line-height: normal; cursor: pointer; max-width: 100%; opacity: 1; position: relative !important; margin: 10px 0px 10px 0px;">
-						<div class="r6o-editor-inner" style="-webkit-box-shadow: none; -moz-box-shadow: none; box-shadow: none; border-radius: 4px; border: 1px solid lightgrey;">
+					<div class="osd-comment-holder r6o-editor r6o-arrow-top r6o-arrow-left pushed right" onclick="_Pict.views.${ this.options.ViewAddress || 'OSDSection' }.selectAnnotation('${ a.id }')">
+						<div class="r6o-editor-inner osd-editor-inner">
 							${ bodyCommentTemplate }
 							${ bodyTagTemplate }
 						</div>
