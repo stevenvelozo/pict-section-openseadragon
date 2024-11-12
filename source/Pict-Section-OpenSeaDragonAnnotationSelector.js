@@ -25,7 +25,7 @@ const default_configuration =
 					.osd-scrollable-comments {
 						height: 100%;
 						width: 100%;
-						overflow-y: scroll;
+						overflow-y: auto;
 						padding: 5px;
 						background-color: lightgrey;
 					}
