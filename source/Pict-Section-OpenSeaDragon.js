@@ -3,15 +3,17 @@ const libPictViewClass = require('pict-view');
 const html = String.raw;
 const css = String.raw;
 
-const default_configuration = {
+const default_configuration = 
+{
 	"RenderOnLoad": true,
-
 	"DefaultRenderable": "OpenSeaDragon-Wrap",
 	"DefaultDestinationAddress": "#OpenSeaDragon-Container-Div",
 	"EnableAnnotation": false,
+	"DisableFullscreen": true,
 	"PrefixUrl": '/',
 	"TileSources": {},
-	"ViewAddress": 'OSDSection',
+	"ViewAddress": 'PictSectionOpenSeaDragon',
+	"OSDASViewAddress": 'PictSectionOpenSeaDragonAnnotationSelector',
 	"Colors": {
 		"red": "red",
 		"green": "green",
@@ -51,11 +53,6 @@ const default_configuration = {
 						height: 100%;
 						width: calc(100% - 25px);
 					}
-					.osd-scrollable-comments {
-						height: 100%;
-						width: 100%;
-						overflow-y: scroll;
-					}
 					.osd-color-active {
 						background-color: rgba(0, 0, 0, 0.3) !important;
 					}
@@ -91,20 +88,6 @@ const default_configuration = {
 					.osd-annotations-panel-open {
 						width: 80% !important
 					}
-					.osd-editable-text {
-						border-top: 1px solid lightgrey; 
-						max-height: fit-content;
-					}
-					.osd-editor-inner {
-						-webkit-box-shadow: none; 
-						-moz-box-shadow: none; 
-						box-shadow: none; 
-						border-radius: 4px; 
-						border: 1px solid lightgrey;
-					}
-					.osd-comment-holder {
-						z-index: auto; line-height: normal; cursor: pointer; max-width: 100%; opacity: 1; position: relative !important; margin: 10px 0px 10px 0px;
-					}
 				</style>
 			`
 		}
@@ -129,8 +112,7 @@ class PictSectionOpenSeaDragon extends libPictViewClass
 		let tmpOptions = Object.assign({}, default_configuration, pOptions);
 
 		super(pFable, tmpOptions, pServiceHash);
-
-		this.initialRenderComplete = false;
+		this.triggerRender = false;
 	}
 
 	onBeforeInitialize()
@@ -170,7 +152,8 @@ class PictSectionOpenSeaDragon extends libPictViewClass
 		{
 			element: this.targetElement,
 			prefixUrl: this.options.PrefixUrl,
-			tileSources: this.options.TileSources
+			tileSources: this.options.TileSources,
+			showFullPageControl: !this.options.DisableFullscreen
 		};
 
 		// Color formatter for Annotorious. Works with the styleClass attribute and the color class system which is config based.
@@ -218,6 +201,16 @@ class PictSectionOpenSeaDragon extends libPictViewClass
 		this.editingEnabled = this.options.EnableAnnotation && this.toolbarElement;
 		if (this.editingEnabled || this.options.Annotations?.length)
 		{
+			this.AnnotationsPanel = this.pict.views?.[this.options.OSDASViewAddress];
+			if (!this.AnnotationsPanel)
+			{
+				this.triggerRender = true;
+			}
+			if (this.AnnotationsPanel && this.triggerRender)
+			{
+				this.triggerRender = false;
+				this.AnnotationsPanel.render();
+			}
 
 			// Settings for configuring Annotorious.
 			this.annoSettings = {
@@ -258,7 +251,7 @@ class PictSectionOpenSeaDragon extends libPictViewClass
 				{
 					this.annotator.addAnnotation(a);
 				}
-				this.updateAnnotationsPanel();
+				this.AnnotationsPanel?.updateAnnotationsPanel();
 			}
 
 			// Apply hooks for the annotation events.
@@ -286,6 +279,16 @@ class PictSectionOpenSeaDragon extends libPictViewClass
 			{
 				this.assignColor('red');
 			}
+		}
+	}
+
+	// Set a new tile source. Can optionally rerender the component as well.
+	setTileSources(tileSources, reRender)
+	{
+		this.options.TileSources = tileSources;
+		if (reRender)
+		{
+			this.render();
 		}
 	}
 
@@ -345,7 +348,7 @@ class PictSectionOpenSeaDragon extends libPictViewClass
 			};
 			annotation.target.styleClass = this.color;
 		}
-		this.updateAnnotationsPanel();
+		this.AnnotationsPanel?.updateAnnotationsPanel();
 	}
 
 	// Hook that runs when an annotation gets selected. By default, this just sets the current color to whatever the selected annotation is.
@@ -357,92 +360,13 @@ class PictSectionOpenSeaDragon extends libPictViewClass
 	// Hook that runs when an annotation gets updated. By default this is used for updating the state of the comments side bar.
 	annotationUpdateHook (annotation, previousState)
 	{
-		this.updateAnnotationsPanel();
+		this.AnnotationsPanel?.updateAnnotationsPanel();
 	}
 
 	// Hook that runs when an annotation gets delete. By default this is used for updating the state of the comments side bar.
 	annotationDeleteHook (annotation)
 	{
-		this.updateAnnotationsPanel(annotationSet);
-	}
-
-	// Update the annotations side panel to include any annotation comments/tags, should be called anytime the annotation list gets changed (create/update/delete).
-	updateAnnotationsPanel(annotations) {
-		const annotationSet = annotations || this.captureAnnotations();
-
-		this.pict.ContentAssignment.assignContent('#OSD-Scrollable-Comments', '');
-		let commentsTemplate = '';
-
-		// Loop through the annotations and add any with comments or tags to the panel ui.
-		for (let a of annotationSet)
-		{
-			let bodyCommentTemplate = '';
-			let bodyTagTemplate = '';
-			for (let b of a.body)
-			{
-				if (b.purpose === 'commenting')
-				{
-					bodyCommentTemplate += html`
-						<div class="r6o-editable-text osd-editable-text">
-							${ b.value }
-						</div>
-					`;
-				}
-				if (b.purpose === 'tagging')
-				{
-					bodyTagTemplate += html`
-						<li>
-							<span class="r6o-label">
-								${ b.value }
-							</span>
-						</li>
-					`;
-				}
-			}
-			if (bodyCommentTemplate || bodyTagTemplate)
-			{
-				if (bodyCommentTemplate)
-				{
-					bodyCommentTemplate = html`
-						<div disabled class="r6o-widget comment">
-							${ bodyCommentTemplate }
-						</div>
-					`;
-				}
-				if (bodyTagTemplate)
-				{
-					bodyTagTemplate = html`
-						<div class="r6o-widget r6o-tag">
-							<ul class="r6o-taglist">
-								${ bodyTagTemplate }
-							</ul>
-						</div>
-					`;
-				}
-				commentsTemplate += html`
-					<div class="osd-comment-holder r6o-editor r6o-arrow-top r6o-arrow-left pushed right" onclick="_Pict.views.${ this.options.ViewAddress || 'OSDSection' }.selectAnnotation('${ a.id }')">
-						<div class="r6o-editor-inner osd-editor-inner">
-							${ bodyCommentTemplate }
-							${ bodyTagTemplate }
-						</div>
-					</div>
-				`;
-			}
-		}
-
-		// If anything was added to the panel template, inject it back into the section and ensure the panel is open.
-		if (commentsTemplate)
-		{
-			this.pict.ContentAssignment.assignContent('#OSD-Scrollable-Comments', commentsTemplate);
-			this.pict.ContentAssignment.removeClass('#OSD-Container-Right', 'osd-width-zero');
-			this.pict.ContentAssignment.addClass('#OSD-Container-Left', 'osd-annotations-panel-open');
-		}
-		else
-		{
-			// Otherwise, close the panel ui.
-			this.pict.ContentAssignment.addClass('#OSD-Container-Right', 'osd-width-zero');
-			this.pict.ContentAssignment.removeClass('#OSD-Container-Left', 'osd-annotations-panel-open');
-		}
+		this.AnnotationsPanel?.updateAnnotationsPanel();
 	}
 
 	// Passes an annotation selection event onto the annotator plus does some extra handling to scroll it into view.
@@ -490,6 +414,5 @@ class PictSectionOpenSeaDragon extends libPictViewClass
 }
 
 module.exports = PictSectionOpenSeaDragon;
-
 module.exports.default_configuration = default_configuration;
 

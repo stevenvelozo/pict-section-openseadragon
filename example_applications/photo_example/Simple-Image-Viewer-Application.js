@@ -1,8 +1,17 @@
 const libPictApplication = require('pict-application');
 
 const libPictSectionOpenSeaDragon = require('../../source/Pict-Section-OpenSeaDragon.js');
+const libPictSectionOpenSeaDragonAnnotationPanel = require('../../source/Pict-Section-OpenSeaDragonAnnotationSelector.js');
 
 class ExampleImageView extends libPictSectionOpenSeaDragon
+{
+	constructor(pFable, pOptions, pServiceHash)
+	{
+		super(pFable, pOptions, pServiceHash);
+	}
+}
+
+class PictSectionOpenSeaDragonAnnotationSelector extends libPictSectionOpenSeaDragonAnnotationPanel
 {
 	constructor(pFable, pOptions, pServiceHash)
 	{
@@ -15,6 +24,20 @@ const pathname = window.location.pathname;
 const tokens = pathname.split('/');
 tokens.pop();
 const newUrl = tokens.join('/') + '/images/';
+
+const AnnotationsPanelConfiguration = 
+{
+	"OSDViewAddress": "ExampleImageView",
+	"Colors": 
+	{
+		"red": "red",
+		"green": "green",
+		"blue": "blue",
+		"cyan": "#4dd0e1",
+		"deep-purple": "#673ab7",
+		"pink": "#ff4081"
+	},
+};
 
 const ExampleImageConfiguration = (
 {
@@ -205,6 +228,8 @@ class PostcardApplication extends libPictApplication
 		super(pFable, pOptions, pServiceHash);
 
 		this.pict.addView('ExampleImageView', Object.assign(libPictSectionOpenSeaDragon.default_configuration, ExampleImageConfiguration), ExampleImageView);
+		this.pict.addView('PictSectionOpenSeaDragonAnnotationSelector', Object.assign(libPictSectionOpenSeaDragonAnnotationPanel.default_configuration, AnnotationsPanelConfiguration), PictSectionOpenSeaDragonAnnotationSelector);
+		this.pict.views.PictSectionOpenSeaDragonAnnotationSelector.render();
 	}
 };
 
