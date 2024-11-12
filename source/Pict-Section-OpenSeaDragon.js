@@ -385,7 +385,7 @@ class PictSectionOpenSeaDragon extends libPictViewClass
 		}
 
 		// Pan/Zoom the OSD controller to the annotation that is being selected.
-		this.annotator.fitBounds(id);
+		this.annotator.fitBoundsWithConstraints(id);
 	}
 
 	/*
