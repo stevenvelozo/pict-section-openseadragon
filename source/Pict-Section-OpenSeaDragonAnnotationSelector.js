@@ -27,16 +27,17 @@ const default_configuration =
 						width: 100%;
 						overflow-y: scroll;
 						padding: 5px;
+						background-color: lightgrey;
 					}
 					.osd-editable-text {
 						border-top: 1px solid lightgrey; 
 						max-height: fit-content;
 					}
 					.osd-editor-inner {
-						-webkit-box-shadow: none; 
-						-moz-box-shadow: none; 
-						box-shadow: none; 
-						border-radius: 4px; 
+						-webkit-box-shadow: none !important; 
+						-moz-box-shadow: none !important; 
+						box-shadow: none !important; 
+						border-radius: 6px !important; 
 						border: 1px solid lightgrey;
 					}
 					.osd-comment-holder {
@@ -51,10 +52,22 @@ const default_configuration =
 					.osd-comment-color-flag {
 						height: 12px;
 						width: 60%;
-						border-bottom: 1px solid lightgrey;
-						border-right: 1px solid lightgrey;
+						border-bottom: 3px solid lightgrey;
+						border-right: 3px solid lightgrey;
 						display: block;
-						border-radius: 0px 0px 30px 0px;
+						border-radius: 6px 0px 25px 0px;
+					}
+					.osd-editor-inner:hover > span.osd-comment-color-flag{
+						transform: translate(-2px, -2px);
+						border-bottom: 5px solid lightgrey;
+						border-right: 5px solid lightgrey;
+					}
+					.osdas-taglist {
+						display: flex;
+    					flex-wrap: wrap;
+					}
+					.osdas-widget {
+						display: block !important;
 					}
 				</style>
 			`
@@ -154,8 +167,8 @@ class PictSectionOpenSeaDragonAnnotationSelector extends libPictViewClass
 				if (bodyTagTemplate)
 				{
 					bodyTagTemplate = html`
-						<div class="r6o-widget r6o-tag">
-							<ul class="r6o-taglist">
+						<div class="r6o-widget r6o-tag osdas-widget">
+							<ul class="r6o-taglist osdas-taglist">
 								${ bodyTagTemplate }
 							</ul>
 						</div>
