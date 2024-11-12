@@ -48,6 +48,7 @@ const default_configuration =
 						opacity: 1; 
 						position: relative !important; 
 						margin: 10px 0px 10px 0px;
+						width: 100% !important;
 					}
 					.osd-comment-color-flag {
 						height: 12px;

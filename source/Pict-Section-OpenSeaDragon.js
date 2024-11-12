@@ -10,6 +10,7 @@ const default_configuration =
 	"DefaultDestinationAddress": "#OpenSeaDragon-Container-Div",
 	"EnableAnnotation": false,
 	"DisableFullscreen": true,
+	"DisableButtons": false,
 	"PrefixUrl": '/',
 	"TileSources": {},
 	"ViewAddress": 'PictSectionOpenSeaDragon',
@@ -153,7 +154,9 @@ class PictSectionOpenSeaDragon extends libPictViewClass
 			element: this.targetElement,
 			prefixUrl: this.options.PrefixUrl,
 			tileSources: this.options.TileSources,
-			showFullPageControl: !this.options.DisableFullscreen
+			showFullPageControl: !this.options.DisableFullscreen,
+			showZoomControl: !this.options.DisableButtons,
+			showHomeControl: !this.options.DisableButtons
 		};
 
 		// Color formatter for Annotorious. Works with the styleClass attribute and the color class system which is config based.
