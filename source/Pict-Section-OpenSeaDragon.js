@@ -43,7 +43,7 @@ const default_configuration =
 						height: 100vh; 
 						top:0; left:0; 
 						background-color: transparent; 
-						position:absolute;
+						position: absolute;
 					}
 					.osd-container-wrapper {
 						width: 100%; 
@@ -97,6 +97,14 @@ const default_configuration =
 					}
 					.osd-annotations-panel-open {
 						width: 80% !important
+					}
+					.osd-color-subcircle {
+						display: block;
+						height: 20px;
+						width: 20px;
+						border: 1px solid black;
+						border-radius: 50%;
+						margin: auto;
 					}
 				</style>
 			`
@@ -282,7 +290,9 @@ class PictSectionOpenSeaDragon extends libPictViewClass
 				for (let color of Object.keys(this.colorSet))
 				{
 					colorSelectorTemplate += html`
-						<button type="button" class="osd-color-button-class" onclick="_Pict.views.${ this.options.ViewAddress || 'OSDSection' }.assignColor('${ color }')" id="ColorSelector${ color }" style="color: ${ this.colorSet[color] };">&#11044;</button>
+						<button type="button" class="osd-color-button-class" onclick="_Pict.views.${ this.options.ViewAddress || 'OSDSection' }.assignColor('${ color }')" id="ColorSelector${ color }">
+							<div style="background-color: ${ this.colorSet[color] };" class="osd-color-subcircle"></div>
+						</button>
 					`;
 				}
 				this.pict.ContentAssignment.assignContent('#ColorPickerToolbar', `
