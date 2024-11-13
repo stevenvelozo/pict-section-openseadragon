@@ -317,6 +317,21 @@ class PictSectionOpenSeaDragon extends libPictViewClass
 		}
 	}
 
+	// Set an Annotation set. Can optionally rerender component as well.
+	setAnnotations(annotations, reRender)
+	{
+		this.annotator.clearAnnotations();
+		for (let a of annotations)
+		{
+			this.annotator.addAnnotation(a);
+		}
+		this.AnnotationsPanel?.updateAnnotationsPanel();
+		if (reRender)
+		{
+			this.render();
+		}
+	}
+
 	/**
 	 * This is expected to be overloaded with anything that needs to be added to the OpenSeaDragon configuration.
 	 */
