@@ -1,6 +1,6 @@
 {
     "name": "pict-section-openseadragon",
-    "version": "1.0.8",
+    "version": "1.0.9",
     "description": "Pict Open Sea Dragon Section",
     "main": "source/Pict-Section-OpenSeaDragon.js",
     "scripts": {
