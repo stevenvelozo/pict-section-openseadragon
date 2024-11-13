@@ -321,11 +321,7 @@ class PictSectionOpenSeaDragon extends libPictViewClass
 	setAnnotations(annotations, reRender)
 	{
 		this.annotator.clearAnnotations();
-		for (let a of annotations)
-		{
-			this.annotator.addAnnotation(a);
-		}
-		this.AnnotationsPanel?.updateAnnotationsPanel();
+		this.options.Annotations = annotations;
 		if (reRender)
 		{
 			this.render();
