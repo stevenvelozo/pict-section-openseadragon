@@ -136,7 +136,7 @@ class PictSectionOpenSeaDragonAnnotationSelector extends libPictViewClass
 			let bodyTagTemplate = '';
 			for (let b of a.body)
 			{
-				if (b.purpose === 'commenting')
+				if (b.purpose === 'commenting' || b.purpose === 'replying')
 				{
 					bodyCommentTemplate += html`
 						<div class="r6o-editable-text osd-editable-text">
