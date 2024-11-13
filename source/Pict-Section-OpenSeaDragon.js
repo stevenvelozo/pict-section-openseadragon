@@ -33,9 +33,18 @@ const default_configuration =
 						<div id="ColorPickerToolbar" class="osd-color-picker-toolbar"></div>
 					</div>
 				</div>
+				<div id="OSD-SVG-Sandbox" class="osd-sandbox"></div>
 				<style id="ColorOverrides"></style>
 				<style id="SelectedColorOverride"></style>
 				<style id="OSDGeneralStyling">
+					.osd-sandbox {
+						pointer-events: none; 
+						width: 100vw; 
+						height: 100vh; 
+						top:0; left:0; 
+						background-color: transparent; 
+						position:absolute;
+					}
 					.osd-container-wrapper {
 						width: 100%; 
 						height: 100%; 
@@ -184,6 +193,9 @@ class PictSectionOpenSeaDragon extends libPictViewClass
 					.pict-osd-${ color } > * {
 						stroke: ${ this.colorSet[color] } !important;
 						stroke-width: 2 !important;
+					}
+					.pict-osd-fill-${ color } {
+						fill: ${ this.colorSet[color] } !important;
 					}
 				`;
 			}
@@ -358,6 +370,7 @@ class PictSectionOpenSeaDragon extends libPictViewClass
 	annotationSelectionHook (annotation, element)
 	{
 		this.assignColor(annotation?.target?.styleClass || 'red');
+		this.releaseAnnotations();
 	}
 
 	// Hook that runs when an annotation gets updated. By default this is used for updating the state of the comments side bar.
@@ -389,6 +402,111 @@ class PictSectionOpenSeaDragon extends libPictViewClass
 
 		// Pan/Zoom the OSD controller to the annotation that is being selected.
 		this.annotator.fitBoundsWithConstraints(id);
+	}
+
+	// Adds a connecting line between a comment and an element.
+	connectAnnotation(id)
+	{
+		let selectionBox = this.pict.ContentAssignment.getElement(`.r6o-editor:not(.osd-comment-holder)`);
+		let isSelectionOpen = selectionBox?.[0];
+		if (isSelectionOpen) {
+			this.pict.ContentAssignment.assignContent(`#OSD-SVG-Sandbox`, '');
+			return;
+		}
+		const safeID = id.replaceAll('#', '');
+		this.pict.ContentAssignment.assignContent(`#OSD-SVG-Sandbox`, '');
+		const commentElement = this.pict.ContentAssignment.getElement(`#OSD-Comment-${ safeID }`);
+		const annotationElement = this.pict.ContentAssignment.getElement(`[data-id="${ id }"]`);
+		if (!commentElement?.[0] || !annotationElement?.[0])
+		{
+			console.warn('An expected element was missing, cannot render annotation connection with id: ', id);
+			return;
+		}
+		const osdElementPosition = this?.viewer?.element?.getBoundingClientRect();
+		const commentPosition = commentElement?.[0]?.getBoundingClientRect();
+		let annotationPosition = annotationElement?.[0]?.getBoundingClientRect();
+		const isInView = () => 
+		{
+			return annotationPosition.top >= osdElementPosition.top &&
+				   annotationPosition.left >= osdElementPosition.left &&
+				   annotationPosition.left + annotationPosition.width <= osdElementPosition.left + osdElementPosition.width &&
+				   annotationPosition.height + annotationPosition.height <= osdElementPosition.height + osdElementPosition.height;
+		};
+		const performGraphics = () => 
+		{
+			annotationPosition = annotationElement?.[0]?.getBoundingClientRect();
+			let colorClass = '';
+			let fillClass = '';
+			for (let a of this.captureAnnotations())
+			{
+				if (a.id === id)
+				{
+					colorClass = 'pict-osd-' + a?.target?.styleClass;
+					fillClass = 'pict-osd-fill-' + a?.target?.styleClass;
+				}
+			}
+			const lineTemplate = html`
+				<style>
+					.osd-connector-svg {
+						z-index: 9999999;
+						width: 100%;
+						height: 100%;
+					}
+					.osd-connector-rect.osd-connector-specific {
+						stroke: transparent !important;
+					}
+					.osd-connector-line.osd-connector-specific {
+						stroke-width: 2.5 !important;
+					}
+				</style>
+				<svg class="${ colorClass } osd-connector-svg">
+					<rect class="osd-connector-rect osd-connector-specific" fill="rgb(255, 234, 0, 0.2)" x="${ annotationPosition.left }" y="${ annotationPosition.top }" width="${ annotationPosition.width }" height="${ annotationPosition.height }" />
+					<line class="osd-connector-line osd-connector-specific" x1="${ commentPosition.left + 5  }" y1="${ commentPosition.top + 5 }" x2="${ annotationPosition.left + annotationPosition.width/2 }" y2="${ annotationPosition.top + annotationPosition.height/2 }" id="line1"/>
+					<circle class="${ fillClass }" cx="${ annotationPosition.left + annotationPosition.width/2 }" cy="${ annotationPosition.top + annotationPosition.height/2 }" r="5" />
+				</svg>`;
+
+			const triggeringElement = this.pict.ContentAssignment.getElement(`#OSD-Comment-Outer-${ safeID }`);
+			selectionBox = this.pict.ContentAssignment.getElement(`.r6o-editor:not(.osd-comment-holder)`);
+			isSelectionOpen = selectionBox?.[0];
+			// Only render the svg elements if the user is still hovering and selection is not being edited.
+			if (triggeringElement?.[0]?.matches(':hover') && !isSelectionOpen) {
+				this.pict.ContentAssignment.assignContent(`#OSD-SVG-Sandbox`, lineTemplate);
+			}
+			else if (isSelectionOpen)
+			{
+				this.pict.ContentAssignment.assignContent(`#OSD-SVG-Sandbox`, '');
+			}
+		}
+		if (!isInView())
+		{
+			this.annotator.panTo(id);
+			setTimeout(()=>
+			{
+				annotationPosition = annotationElement?.[0]?.getBoundingClientRect();
+				if (!isInView())
+				{
+					this.annotator.fitBoundsWithConstraints(id);
+					setTimeout(()=>
+					{
+						performGraphics();
+					}, 500);
+				}
+				else
+				{
+					performGraphics();
+				}
+			}, 1000)
+		}
+		else
+		{
+			performGraphics();
+		}
+	}
+
+	// Removes any connecting lines between a comments and annotations.
+	releaseAnnotations()
+	{
+		this.pict.ContentAssignment.assignContent(`#OSD-SVG-Sandbox`, '');
 	}
 
 	/*
