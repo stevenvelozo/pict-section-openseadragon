@@ -376,7 +376,7 @@ class PictSectionOpenSeaDragon extends libPictViewClass
 			{
 				"type": "CssStylesheet",
 				"value": css`
-					.${ this.color } { 
+					.${ this.color } > * { 
 						stroke: ${ this.colorSet?.[this.color] } !important;
 						stroke-width: 2 !important; 
 					}

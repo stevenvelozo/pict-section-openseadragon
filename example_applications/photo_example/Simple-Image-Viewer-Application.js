@@ -76,7 +76,7 @@ const ExampleImageConfiguration = (
 			"body": [],
 			"stylesheet": {
 				"type": "CssStylesheet",
-				"value": ".pink { stroke: #ff4081 !important; stroke-width: 2 !important; }"
+				"value": ".pink > * { stroke: #ff4081 !important; stroke-width: 2 !important; }"
 			},
 			"target": {
 				"source": "",
@@ -95,7 +95,7 @@ const ExampleImageConfiguration = (
 			"body": [],
 			"stylesheet": {
 				"type": "CssStylesheet",
-				"value": ".cyan { stroke: #4dd0e1 !important; stroke-width: 2 !important; }"
+				"value": ".cyan > * { stroke: #4dd0e1 !important; stroke-width: 2 !important; }"
 			},
 			"target": {
 				"source": "",
@@ -115,7 +115,7 @@ const ExampleImageConfiguration = (
 			"body": [],
 			"stylesheet": {
 				"type": "CssStylesheet",
-				"value": ".blue { stroke: blue !important; stroke-width: 2 !important; }"
+				"value": ".blue > * { stroke: blue !important; stroke-width: 2 !important; }"
 			},
 			"target": {
 				"source": "",
@@ -150,7 +150,7 @@ const ExampleImageConfiguration = (
 			],
 			"stylesheet": {
 				"type": "CssStylesheet",
-				"value": ".cyan { stroke: #4dd0e1 !important; stroke-width: 2 !important; }"
+				"value": ".cyan > * { stroke: #4dd0e1 !important; stroke-width: 2 !important; }"
 			},
 			"target": {
 				"source": "",
@@ -179,7 +179,7 @@ const ExampleImageConfiguration = (
 			],
 			"stylesheet": {
 				"type": "CssStylesheet",
-				"value": ".red { stroke: red !important; stroke-width: 2 !important; }"
+				"value": ".red > * { stroke: red !important; stroke-width: 2 !important; }"
 			},
 			"target": {
 				"source": "",
@@ -206,7 +206,7 @@ const ExampleImageConfiguration = (
 			],
 			"stylesheet": {
 				"type": "CssStylesheet",
-				"value": ".deep-purple { stroke: #673ab7 !important; stroke-width: 2 !important; }"
+				"value": ".deep-purple > * { stroke: #673ab7 !important; stroke-width: 2 !important; }"
 			},
 			"target": {
 				"source": "",
