@@ -125,6 +125,16 @@ class PictSectionOpenSeaDragonAnnotationSelector extends libPictViewClass
 	// Update the annotations side panel to include any annotation comments/tags, should be called anytime the annotation list gets changed (create/update/delete).
 	updateAnnotationsPanel(annotations) {
 		const annotationSet = annotations || this.OSDSection?.captureAnnotations() || [];
+		annotationSet.sort((a,b)=>
+		{
+			if ( a.id < b.id ){
+				return -1;
+			}
+			if ( a.id > b.id ){
+				return 1;
+			}
+			return 0;
+		});
 
 		this.pict.ContentAssignment.assignContent('#OSD-Scrollable-Comments', '');
 		let commentsTemplate = '';

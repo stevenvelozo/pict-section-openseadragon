@@ -21,7 +21,7 @@ const default_configuration =
 		"blue": "blue"
 	},
 	"Annotations": [],
-
+	"DrawModeLabel": "Annotation",
 	"Templates": [
 		{
 			"Hash": "OpenSeaDragon-Container",
@@ -32,11 +32,52 @@ const default_configuration =
 						<div id="DrawingToolbar" class="osd-drawing-toolbar"></div>
 						<div id="ColorPickerToolbar" class="osd-color-picker-toolbar"></div>
 					</div>
+					<div id="DrawingModeToggle" class="osd-height-zero osd-drawmode-toggle-box">
+					</div>
 				</div>
 				<div id="OSD-SVG-Sandbox" class="osd-sandbox"></div>
 				<style id="ColorOverrides"></style>
 				<style id="SelectedColorOverride"></style>
 				<style id="OSDGeneralStyling">
+					.osd-drawmode-toggle-box {
+						display: flex;
+					}
+					.osd-drawmode-text {
+						font-size: 17px;
+						font-family: Lato,sans-serif;
+						margin-left: 5px;
+						margin-right: 5px;
+					}
+					.osd-drawmode-switch {
+						position: relative;
+						display: inline-block;
+						width: 40px;
+						height: 20px;
+						background-color: rgba(0, 0, 0, 0.25);
+						border-radius: 20px;
+						transition: all 0.3s;
+						cursor: pointer;
+					}
+					.osd-drawmode-switch::after {
+						content: '';
+						position: absolute;
+						width: 18px;
+						height: 18px;
+						border-radius:50%;
+						background-color: white;
+						top: 1px;
+						left: 1px;
+						transition: all 0.3s;
+					}
+					.osd-drawmode-checkbox:checked + .osd-drawmode-switch::after {
+						left : 20px;
+					}
+					.osd-drawmode-checkbox:checked + .osd-drawmode-switch {
+						background-color: #7983ff;
+					}
+					.osd-drawmode-checkbox {
+						display : none;
+					}
 					.osd-sandbox {
 						pointer-events: none; 
 						width: 100vw; 
@@ -264,6 +305,7 @@ class PictSectionOpenSeaDragon extends libPictViewClass
 			{
 				this.pict.ContentAssignment.addClass('#OpenSeaDragon-Element', 'osd-with-annotations');
 				this.pict.ContentAssignment.removeClass('#OSD-Toolbar', 'osd-height-zero');
+				this.pict.ContentAssignment.removeClass('#DrawingModeToggle', 'osd-height-zero');
 				Annotorious.Toolbar(this.annotator, this.toolbarElement, { withMouse: true, withTooltip:false });
 			}
 
@@ -282,6 +324,13 @@ class PictSectionOpenSeaDragon extends libPictViewClass
 			this.annotator.on('selectAnnotation', (annotation, element) => { this.annotationSelectionHook(annotation, element); });
 			this.annotator.on('updateAnnotation', (annotation, previousState) => { this.annotationUpdateHook(annotation, previousState); });
 			this.annotator.on('deleteAnnotation', (annotation) => { this.annotationDeleteHook(annotation); });
+			this.annotator.on('createSelection', async (selection) =>
+			{
+				if (this.annotator.disableEditor)
+				{
+					this.annotator.updateSelected(selection, true);
+				}
+			});
 
 			// If a custom color set was passed via config, add those custom colors to the toolbar if editing is enabled.
 			if (this.colorSet && this.editingEnabled)
@@ -303,6 +352,17 @@ class PictSectionOpenSeaDragon extends libPictViewClass
 			else
 			{
 				this.assignColor('red');
+			}
+			if (this.editingEnabled)
+			{
+				const drawingModeTemplate = html`
+					<input type="checkbox" id="osd-drawmode-toggle" class="osd-drawmode-checkbox" checked onclick="_Pict.views.${ this.options.ViewAddress || 'OSDSection' }.toggleDrawingMode()"/>  
+					<label for="osd-drawmode-toggle" class="osd-drawmode-switch"></label>
+			 		<span class="osd-drawmode-text"> ${ this.options?.DrawModeLabel || 'Annotation' } </span>`;
+				this.pict.ContentAssignment.assignContent('#DrawingModeToggle', `
+					${ drawingModeTemplate }
+				`);
+				this.annotator.disableEditor = false;
 			}
 		}
 	}
@@ -397,13 +457,32 @@ class PictSectionOpenSeaDragon extends libPictViewClass
 	// Hook that runs when an annotation gets updated. By default this is used for updating the state of the comments side bar.
 	annotationUpdateHook (annotation, previousState)
 	{
-		this.AnnotationsPanel?.updateAnnotationsPanel();
+		if (this.annotator?.disableEditor)
+		{
+			setTimeout(()=>
+			{
+				this.AnnotationsPanel?.updateAnnotationsPanel();
+			}, 10);
+		}
+		else
+		{
+			this.AnnotationsPanel?.updateAnnotationsPanel();
+		}
 	}
 
 	// Hook that runs when an annotation gets delete. By default this is used for updating the state of the comments side bar.
 	annotationDeleteHook (annotation)
 	{
 		this.AnnotationsPanel?.updateAnnotationsPanel();
+	}
+
+	// Toggles the annotator between "drawing only" mode and "commenting" mode.
+	toggleDrawingMode ()
+	{
+		if (this.annotator)
+		{
+			this.annotator.disableEditor = !this.annotator.disableEditor;
+		}
 	}
 
 	// Passes an annotation selection event onto the annotator plus does some extra handling to scroll it into view.
@@ -428,8 +507,7 @@ class PictSectionOpenSeaDragon extends libPictViewClass
 	// Adds a connecting line between a comment and an element.
 	connectAnnotation(id)
 	{
-		let selectionBox = this.pict.ContentAssignment.getElement(`.r6o-editor:not(.osd-comment-holder)`);
-		let isSelectionOpen = selectionBox?.[0];
+		let isSelectionOpen = this.annotator.getSelected();
 		if (isSelectionOpen) {
 			this.pict.ContentAssignment.assignContent(`#OSD-SVG-Sandbox`, '');
 			return;
@@ -487,8 +565,7 @@ class PictSectionOpenSeaDragon extends libPictViewClass
 				</svg>`;
 
 			const triggeringElement = this.pict.ContentAssignment.getElement(`#OSD-Comment-Outer-${ safeID }`);
-			selectionBox = this.pict.ContentAssignment.getElement(`.r6o-editor:not(.osd-comment-holder)`);
-			isSelectionOpen = selectionBox?.[0];
+			isSelectionOpen = this.annotator.getSelected();
 			// Only render the svg elements if the user is still hovering and selection is not being edited.
 			if (triggeringElement?.[0]?.matches(':hover') && !isSelectionOpen) {
 				this.pict.ContentAssignment.assignContent(`#OSD-SVG-Sandbox`, lineTemplate);
