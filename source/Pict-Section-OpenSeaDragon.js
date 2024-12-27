@@ -324,13 +324,7 @@ class PictSectionOpenSeaDragon extends libPictViewClass
 			this.annotator.on('selectAnnotation', (annotation, element) => { this.annotationSelectionHook(annotation, element); });
 			this.annotator.on('updateAnnotation', (annotation, previousState) => { this.annotationUpdateHook(annotation, previousState); });
 			this.annotator.on('deleteAnnotation', (annotation) => { this.annotationDeleteHook(annotation); });
-			this.annotator.on('createSelection', async (selection) =>
-			{
-				if (this.annotator.disableEditor)
-				{
-					this.annotator.updateSelected(selection, true);
-				}
-			});
+			this.annotator.on('createSelection', async (selection) => { this.selectionCreateHook(selection) });
 
 			// If a custom color set was passed via config, add those custom colors to the toolbar if editing is enabled.
 			if (this.colorSet && this.editingEnabled)
@@ -428,6 +422,22 @@ class PictSectionOpenSeaDragon extends libPictViewClass
 		`);
 	}
 
+	/**
+	 * @spec focuses the viewport on the referenced annotation, if one exists
+	 * @param { number | string } annotationID - the id of an annotation
+	 * @returns {void}
+	 */
+	focusOnAnnotation(annotationID)
+	{
+		console.debug(`[focusOnAnnotation] id[${annotationID}]`);
+		if (!annotationID)
+		{
+			console.warn('[focusOnAnnotation] no id provided, cannot focus on the associated element');
+			return;
+		}
+		this.annotator.fitBoundsWithConstraints(annotationID);
+	}
+
 	// Hook that runs when an annotation gets selected. By default, this just stores the style of the annotation element as part of the annotation.
 	annotationCreationHook (annotation, overrideID)
 	{
@@ -452,6 +462,7 @@ class PictSectionOpenSeaDragon extends libPictViewClass
 	{
 		this.assignColor(annotation?.target?.styleClass || 'red');
 		this.releaseAnnotations();
+		this.focusOnAnnotation(annotation.id);
 	}
 
 	// Hook that runs when an annotation gets updated. By default this is used for updating the state of the comments side bar.
@@ -474,6 +485,25 @@ class PictSectionOpenSeaDragon extends libPictViewClass
 	annotationDeleteHook (annotation)
 	{
 		this.AnnotationsPanel?.updateAnnotationsPanel();
+	}
+
+	/**
+	 * @spec handles the createSelection event.
+	 * @param {object} selection - selection object from Annotorious API
+	 */
+	async selectionCreateHook (selection)
+	{
+		if (this.annotator.disableEditor)
+		{
+			// note: this updateSelected is async
+			this.annotator.updateSelected(selection, true);
+		}
+		/**
+		 * ideal: focus on selection so user can better interact with it in the viewport.
+		 * Issue is, the selection doesn't yet have an ID, so cannot tell
+		 * Annotorious to adjust the viewport for us.
+		 * this.focusOnAnnotation(selection.id);
+		 */
 	}
 
 	// Toggles the annotator between "drawing only" mode and "commenting" mode.
