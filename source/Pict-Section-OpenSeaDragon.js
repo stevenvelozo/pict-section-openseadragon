@@ -325,6 +325,7 @@ class PictSectionOpenSeaDragon extends libPictViewClass
 			this.annotator.on('updateAnnotation', (annotation, previousState) => { this.annotationUpdateHook(annotation, previousState); });
 			this.annotator.on('deleteAnnotation', (annotation) => { this.annotationDeleteHook(annotation); });
 			this.annotator.on('createSelection', async (selection) => { this.selectionCreateHook(selection) });
+			this.viewer.addHandler('canvas-double-click', (event) => { this.canvasDoubleClickHook(event); });
 
 			// If a custom color set was passed via config, add those custom colors to the toolbar if editing is enabled.
 			if (this.colorSet && this.editingEnabled)
@@ -438,6 +439,16 @@ class PictSectionOpenSeaDragon extends libPictViewClass
 		this.annotator.fitBoundsWithConstraints(annotationID);
 	}
 
+	/**
+	 * @param {object} point - something like an OpenSeaDragon.Point, anything with an x and y property
+	 */
+	focusOnPoint(point)
+	{
+		let vp = this.viewer.viewport.viewerElementToViewportCoordinates(point);
+		this.viewer.viewport.panTo(vp);
+		// TODO should we re-apply constraints here? Not sure it's needed...
+	}
+
 	// Hook that runs when an annotation gets selected. By default, this just stores the style of the annotation element as part of the annotation.
 	annotationCreationHook (annotation, overrideID)
 	{
@@ -504,6 +515,30 @@ class PictSectionOpenSeaDragon extends libPictViewClass
 		 * Annotorious to adjust the viewport for us.
 		 * this.focusOnAnnotation(selection.id);
 		 */
+	}
+
+	/**
+	 *
+	 * @returns {boolean} value of "current zoom >= max zoom (configured for osd)"
+	 */
+	maxZoomReached ()
+	{
+		const maxZoom = this.viewer.viewport.getMaxZoom();
+		const zoom = this.viewer.viewport.getZoom(true);
+		return zoom >= maxZoom;
+	}
+
+	/**
+	 * @spec focuses on the point where the user double clicked.
+	 * @spec we only refocus when maxZoom has been reached to avoid clashing with single click zoom behavior
+	 * @param {object} event
+	 */
+	canvasDoubleClickHook (event)
+	{
+		if (this.maxZoomReached())
+		{
+			this.focusOnPoint(event.position);
+		}
 	}
 
 	// Toggles the annotator between "drawing only" mode and "commenting" mode.
