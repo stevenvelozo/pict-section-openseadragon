@@ -430,10 +430,10 @@ class PictSectionOpenSeaDragon extends libPictViewClass
 	 */
 	focusOnAnnotation(annotationID)
 	{
-		console.debug(`[focusOnAnnotation] id[${annotationID}]`);
+		this.log.debug(`[focusOnAnnotation] id[${annotationID}]`);
 		if (!annotationID)
 		{
-			console.warn('[focusOnAnnotation] no id provided, cannot focus on the associated element');
+			this.log.warn('[focusOnAnnotation] no id provided, cannot focus on the associated element');
 			return;
 		}
 		this.annotator.fitBoundsWithConstraints(annotationID);
@@ -583,7 +583,7 @@ class PictSectionOpenSeaDragon extends libPictViewClass
 		const annotationElement = this.pict.ContentAssignment.getElement(`[data-id="${ id }"]`);
 		if (!commentElement?.[0] || !annotationElement?.[0])
 		{
-			console.warn('An expected element was missing, cannot render annotation connection with id: ', id);
+			this.log.warn('An expected element was missing, cannot render annotation connection with id: ', id);
 			return;
 		}
 		const osdElementPosition = this?.viewer?.element?.getBoundingClientRect();
