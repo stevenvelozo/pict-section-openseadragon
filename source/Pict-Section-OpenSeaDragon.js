@@ -324,13 +324,8 @@ class PictSectionOpenSeaDragon extends libPictViewClass
 			this.annotator.on('selectAnnotation', (annotation, element) => { this.annotationSelectionHook(annotation, element); });
 			this.annotator.on('updateAnnotation', (annotation, previousState) => { this.annotationUpdateHook(annotation, previousState); });
 			this.annotator.on('deleteAnnotation', (annotation) => { this.annotationDeleteHook(annotation); });
-			this.annotator.on('createSelection', async (selection) =>
-			{
-				if (this.annotator.disableEditor)
-				{
-					this.annotator.updateSelected(selection, true);
-				}
-			});
+			this.annotator.on('createSelection', async (selection) => { this.selectionCreateHook(selection) });
+			this.viewer.addHandler('canvas-double-click', (event) => { this.canvasDoubleClickHook(event); });
 
 			// If a custom color set was passed via config, add those custom colors to the toolbar if editing is enabled.
 			if (this.colorSet && this.editingEnabled)
@@ -428,6 +423,32 @@ class PictSectionOpenSeaDragon extends libPictViewClass
 		`);
 	}
 
+	/**
+	 * @spec focuses the viewport on the referenced annotation, if one exists
+	 * @param { number | string } annotationID - the id of an annotation
+	 * @returns {void}
+	 */
+	focusOnAnnotation(annotationID)
+	{
+		this.log.debug(`[focusOnAnnotation] id[${annotationID}]`);
+		if (!annotationID)
+		{
+			this.log.warn('[focusOnAnnotation] no id provided, cannot focus on the associated element');
+			return;
+		}
+		this.annotator.fitBoundsWithConstraints(annotationID);
+	}
+
+	/**
+	 * @param {object} point - something like an OpenSeaDragon.Point, anything with an x and y property
+	 */
+	focusOnPoint(point)
+	{
+		let vp = this.viewer.viewport.viewerElementToViewportCoordinates(point);
+		this.viewer.viewport.panTo(vp);
+		// TODO should we re-apply constraints here? Not sure it's needed...
+	}
+
 	// Hook that runs when an annotation gets selected. By default, this just stores the style of the annotation element as part of the annotation.
 	annotationCreationHook (annotation, overrideID)
 	{
@@ -452,6 +473,7 @@ class PictSectionOpenSeaDragon extends libPictViewClass
 	{
 		this.assignColor(annotation?.target?.styleClass || 'red');
 		this.releaseAnnotations();
+		this.focusOnAnnotation(annotation.id);
 	}
 
 	// Hook that runs when an annotation gets updated. By default this is used for updating the state of the comments side bar.
@@ -474,6 +496,49 @@ class PictSectionOpenSeaDragon extends libPictViewClass
 	annotationDeleteHook (annotation)
 	{
 		this.AnnotationsPanel?.updateAnnotationsPanel();
+	}
+
+	/**
+	 * @spec handles the createSelection event.
+	 * @param {object} selection - selection object from Annotorious API
+	 */
+	async selectionCreateHook (selection)
+	{
+		if (this.annotator.disableEditor)
+		{
+			// note: this updateSelected is async
+			this.annotator.updateSelected(selection, true);
+		}
+		/**
+		 * ideal: focus on selection so user can better interact with it in the viewport.
+		 * Issue is, the selection doesn't yet have an ID, so cannot tell
+		 * Annotorious to adjust the viewport for us.
+		 * this.focusOnAnnotation(selection.id);
+		 */
+	}
+
+	/**
+	 *
+	 * @returns {boolean} value of "current zoom >= max zoom (configured for osd)"
+	 */
+	maxZoomReached ()
+	{
+		const maxZoom = this.viewer.viewport.getMaxZoom();
+		const zoom = this.viewer.viewport.getZoom(true);
+		return zoom >= maxZoom;
+	}
+
+	/**
+	 * @spec focuses on the point where the user double clicked.
+	 * @spec we only refocus when maxZoom has been reached to avoid clashing with single click zoom behavior
+	 * @param {object} event
+	 */
+	canvasDoubleClickHook (event)
+	{
+		if (this.maxZoomReached())
+		{
+			this.focusOnPoint(event.position);
+		}
 	}
 
 	// Toggles the annotator between "drawing only" mode and "commenting" mode.
@@ -518,7 +583,7 @@ class PictSectionOpenSeaDragon extends libPictViewClass
 		const annotationElement = this.pict.ContentAssignment.getElement(`[data-id="${ id }"]`);
 		if (!commentElement?.[0] || !annotationElement?.[0])
 		{
-			console.warn('An expected element was missing, cannot render annotation connection with id: ', id);
+			this.log.warn('An expected element was missing, cannot render annotation connection with id: ', id);
 			return;
 		}
 		const osdElementPosition = this?.viewer?.element?.getBoundingClientRect();
