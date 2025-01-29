@@ -32,7 +32,7 @@ const default_configuration =
 						<div id="DrawingToolbar" class="osd-drawing-toolbar"></div>
 						<div id="ColorPickerToolbar" class="osd-color-picker-toolbar"></div>
 					</div>
-					<div id="DrawingModeToggle" class="osd-height-zero osd-drawmode-toggle-box">
+					<div id="DrawingModeToggle" title="Toggle auto annotate" class="osd-height-zero osd-drawmode-toggle-box">
 					</div>
 				</div>
 				<div id="OSD-SVG-Sandbox" class="osd-sandbox"></div>
@@ -335,7 +335,7 @@ class PictSectionOpenSeaDragon extends libPictViewClass
 				{
 					colorSelectorTemplate += html`
 						<button type="button" class="osd-color-button-class" onclick="_Pict.views.${ this.options.ViewAddress || 'OSDSection' }.assignColor('${ color }')" id="ColorSelector${ color }">
-							<div style="background-color: ${ this.colorSet[color] };" class="osd-color-subcircle"></div>
+							<div title="Color ${ this.colorSet[color] }" style="background-color: ${ this.colorSet[color] };" class="osd-color-subcircle"></div>
 						</button>
 					`;
 				}
