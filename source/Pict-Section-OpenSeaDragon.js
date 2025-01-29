@@ -335,7 +335,7 @@ class PictSectionOpenSeaDragon extends libPictViewClass
 				{
 					colorSelectorTemplate += html`
 						<button type="button" class="osd-color-button-class" onclick="_Pict.views.${ this.options.ViewAddress || 'OSDSection' }.assignColor('${ color }')" id="ColorSelector${ color }">
-							<div title="Color ${ this.colorSet[color] }" style="background-color: ${ this.colorSet[color] };" class="osd-color-subcircle"></div>
+							<div title="Color ${ color }" style="background-color: ${ this.colorSet[color] };" class="osd-color-subcircle"></div>
 						</button>
 					`;
 				}
