@@ -351,7 +351,7 @@ class PictSectionOpenSeaDragon extends libPictViewClass
 			if (this.editingEnabled)
 			{
 				const drawingModeTemplate = html`
-					<input type="checkbox" title="Toggle auto annotate" id="osd-drawmode-toggle" class="osd-drawmode-checkbox" checked onclick="_Pict.views.${ this.options.ViewAddress || 'OSDSection' }.toggleDrawingMode()"/>  
+					<input type="checkbox" id="osd-drawmode-toggle" class="osd-drawmode-checkbox" checked onclick="_Pict.views.${ this.options.ViewAddress || 'OSDSection' }.toggleDrawingMode()"/>  
 					<label for="osd-drawmode-toggle" class="osd-drawmode-switch"></label>
 			 		<span title="${ this.options?.DrawModeLabel || 'Annotation' } " class="osd-drawmode-text"> ${ this.options?.DrawModeLabel || 'Annotation' } </span>`;
 				this.pict.ContentAssignment.assignContent('#DrawingModeToggle', `
