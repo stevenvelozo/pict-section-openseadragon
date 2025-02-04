@@ -360,6 +360,15 @@ class PictSectionOpenSeaDragon extends libPictViewClass
 				this.annotator.disableEditor = false;
 			}
 		}
+		else 
+		{
+			// Instantiate Annotorious then destroy it in case there's any left over state that needs to be cleared.
+			this.annotator = OpenSeadragon.Annotorious(this.viewer, {
+				disableEditor: true,
+				disableSelect: true
+			});	
+			this.annotator.destroy();
+		}
 	}
 
 	// Set a new tile source. Can optionally rerender the component as well.
