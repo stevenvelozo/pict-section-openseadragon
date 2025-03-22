@@ -559,7 +559,7 @@ class PictSectionOpenSeaDragon extends libPictViewClass
 	// Hook that runs when an annotation gets selected. By default, this just sets the current color to whatever the selected annotation is.
 	annotationSelectionHook (annotation, element)
 	{
-		this.assignColor(annotation?.target?.styleClass || 'red');
+		this.assignColor(annotation?.target?.styleClass?.replace('-hatched', '') || 'red');
 		if (annotation?.target?.styleClass?.includes('hatched'))
 		{
 			document.querySelector('#osd-hatchmode-toggle').checked = true;
