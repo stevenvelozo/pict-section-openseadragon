@@ -5,9 +5,10 @@ const css = String.raw;
 
 const hatchScale = 1000;
 
-function buildHatchPattern(color, width)
+function buildHatchPattern(color, bounds)
 {
-	const scale = width / hatchScale;
+	const scaleFactor = bounds.x > bounds.y ? bounds.x : bounds.y;
+	const scale = scaleFactor / hatchScale;
 	const svg = /*html*/`
 		<svg width="200" height="200" xmlns="http://www.w3.org/2000/svg">
 			<pattern id="hatch" width="9" height="1" patternUnits="userSpaceOnUse" patternTransform="rotate(45) scale(${ scale })">
@@ -311,7 +312,7 @@ class PictSectionOpenSeaDragon extends libPictViewClass
 						.pict-osd-${ color }-hatched > * {
 							stroke: ${ this.colorSet[color] } !important;
 							stroke-width: 2 !important;
-							fill: ${ buildHatchPattern(this.colorSet[color], this.viewer?.world?.getItemAt(0)?.getContentSize()?.x || hatchScale) }
+							fill: ${ buildHatchPattern(this.colorSet[color], this.viewer?.world?.getItemAt(0)?.getContentSize() || { x: hatchScale, y: hatchScale }) }
 						}
 					`;
 				}
@@ -538,7 +539,7 @@ class PictSectionOpenSeaDragon extends libPictViewClass
 					.${ this.color }-hatched > * { 
 						stroke: ${ this.colorSet?.[this.color] } !important;
 						stroke-width: 2 !important; 
-						fill: ${ buildHatchPattern(this.colorSet?.[this.color], this.viewer?.world?.getItemAt(0)?.getContentSize()?.x || hatchScale) }
+						fill: ${ buildHatchPattern(this.colorSet?.[this.color], this.viewer?.world?.getItemAt(0)?.getContentSize() || { x: hatchScale, y: hatchScale }) }
 					}
 				`
 			} :
