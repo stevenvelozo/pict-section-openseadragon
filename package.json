@@ -1,6 +1,6 @@
 {
     "name": "pict-section-openseadragon",
-    "version": "1.0.18",
+    "version": "1.0.19",
     "description": "Pict Open Sea Dragon Section",
     "main": "source/Pict-Section-OpenSeaDragon.js",
     "scripts": {
@@ -26,8 +26,8 @@
     "devDependencies": {
         "bower": "^1.8.14",
         "browser-env": "^3.3.0",
-        "pict": "^1.0.210",
-        "quackage": "^1.0.31"
+        "pict": "^1.0.293",
+        "quackage": "^1.0.42"
     },
     "mocha": {
         "diff": true,
@@ -48,6 +48,6 @@
         ]
     },
     "dependencies": {
-        "pict-view": "^1.0.51"
+        "pict-view": "^1.0.63"
     }
 }

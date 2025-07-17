@@ -239,8 +239,9 @@ class PictSectionOpenSeaDragon extends libPictViewClass
 		this.targetElementAddress = false;
 	}
 
-	onAfterRender()
+	onAfterRender(pRenderable)
 	{
+		super.onAfterRender(pRenderable);
 		this.hatchMode = false;
 		let tmpTargetElementSet = this.services.ContentAssignment.getElement('#OpenSeaDragon-Element');
 		if (tmpTargetElementSet.length < 1)

@@ -104,8 +104,9 @@ class PictSectionOpenSeaDragonAnnotationSelector extends libPictViewClass
 		this.targetElementAddress = false;
 	}
 
-	onAfterRender()
+	onAfterRender(pRenderable)
 	{
+		super.onAfterRender(pRenderable);
 		this.OSDSection = this.pict.views?.[this.options.OSDViewAddress];
 		if (!this.OSDSection)
 		{
