@@ -104,8 +104,9 @@ class PictSectionOpenSeaDragonAnnotationSelector extends libPictViewClass
 		this.targetElementAddress = false;
 	}
 
-	onAfterRender()
+	onAfterRender(pRenderable)
 	{
+		super.onAfterRender(pRenderable);
 		this.OSDSection = this.pict.views?.[this.options.OSDViewAddress];
 		if (!this.OSDSection)
 		{
@@ -188,7 +189,7 @@ class PictSectionOpenSeaDragonAnnotationSelector extends libPictViewClass
 				commentsTemplate += html`
 					<div id="OSD-Comment-Outer-${ a.id.replaceAll('#', '') }" class="osd-comment-holder r6o-editor r6o-arrow-top r6o-arrow-left pushed right" onmouseover="_Pict.views.${ this.options.OSDViewAddress || 'PictSectionOpenSeaDragon' }.connectAnnotation('${ a.id }')" onmouseout="_Pict.views.${ this.options.OSDViewAddress || 'PictSectionOpenSeaDragon' }.releaseAnnotations()" onclick="_Pict.views.${ this.options.OSDViewAddress || 'PictSectionOpenSeaDragon' }.selectAnnotation('${ a.id }')">
 						<div class="r6o-editor-inner osd-editor-inner">
-							<span class="osd-comment-color-flag" id="OSD-Comment-${ a.id.replaceAll('#', '') }" style="background-color: ${ this.options.Colors[a?.target?.styleClass] || 'transparent' };"></span>
+							<span class="osd-comment-color-flag" id="OSD-Comment-${ a.id.replaceAll('#', '') }" style="background-color: ${ this.options.Colors[a?.target?.styleClass?.replace('-hatched', '')] || 'transparent' };"></span>
 							${ bodyCommentTemplate }
 							${ bodyTagTemplate }
 						</div>
