@@ -3,6 +3,23 @@ const libPictViewClass = require('pict-view');
 const html = String.raw;
 const css = String.raw;
 
+const hatchScale = 1000;
+
+function buildHatchPattern(color, bounds)
+{
+	const scaleFactor = bounds.x > bounds.y ? bounds.x : bounds.y;
+	const scale = scaleFactor / hatchScale;
+	const svg = /*html*/`
+		<svg width="200" height="200" xmlns="http://www.w3.org/2000/svg">
+			<pattern id="hatch" width="9" height="1" patternUnits="userSpaceOnUse" patternTransform="rotate(45) scale(${ scale })">
+				<rect x="0" y="0" width="3" height="1" fill="${ color }" fill-opacity="30%"/>
+			</pattern>
+		</svg>
+	`;
+	console.log('Scaling: ', scale);
+	return "url('data:image/svg+xml;utf8, " + encodeURIComponent(svg) + "#hatch') !important;";
+}
+
 const default_configuration = 
 {
 	"RenderOnLoad": true,
@@ -22,6 +39,7 @@ const default_configuration =
 	},
 	"Annotations": [],
 	"DrawModeLabel": "Annotation",
+	"HatchModeLabel": "Hatching",
 	"Templates": [
 		{
 			"Hash": "OpenSeaDragon-Container",
@@ -76,6 +94,46 @@ const default_configuration =
 						background-color: #7983ff;
 					}
 					.osd-drawmode-checkbox {
+						display : none;
+					}
+					.osd-hatchmode-toggle-box {
+						display: flex;
+					}
+					.osd-hatchmode-text {
+						font-size: 17px;
+						font-family: Lato,sans-serif;
+						margin-left: 5px;
+						margin-right: 5px;
+					}
+					.osd-hatchmode-switch {
+						position: relative;
+						display: inline-block;
+						width: 40px;
+						height: 20px;
+						background-color: rgba(0, 0, 0, 0.25);
+						border-radius: 20px;
+						transition: all 0.3s;
+						cursor: pointer;
+						margin-left: 20px;
+					}
+					.osd-hatchmode-switch::after {
+						content: '';
+						position: absolute;
+						width: 18px;
+						height: 18px;
+						border-radius:50%;
+						background-color: white;
+						top: 1px;
+						left: 1px;
+						transition: all 0.3s;
+					}
+					.osd-hatchmode-checkbox:checked + .osd-hatchmode-switch::after {
+						left : 20px;
+					}
+					.osd-hatchmode-checkbox:checked + .osd-hatchmode-switch {
+						background-color: #7983ff;
+					}
+					.osd-hatchmode-checkbox {
 						display : none;
 					}
 					.osd-sandbox {
@@ -181,8 +239,10 @@ class PictSectionOpenSeaDragon extends libPictViewClass
 		this.targetElementAddress = false;
 	}
 
-	onAfterRender()
+	onAfterRender(pRenderable)
 	{
+		super.onAfterRender(pRenderable);
+		this.hatchMode = false;
 		let tmpTargetElementSet = this.services.ContentAssignment.getElement('#OpenSeaDragon-Element');
 		if (tmpTargetElementSet.length < 1)
 		{
@@ -219,7 +279,9 @@ class PictSectionOpenSeaDragon extends libPictViewClass
 
 		// Color formatter for Annotorious. Works with the styleClass attribute and the color class system which is config based.
 		this.format = (annotation) => {
-			return 'pict-osd-' + (annotation?.underlying?.target?.styleClass || this.color || 'red');
+			const colorClass = 'pict-osd-' + (annotation?.underlying?.target?.styleClass || (this.hatchMode ? this.color + '-hatched' : this.color) || 'red');
+			const fillClass = annotation?.underlying?.target?.fillClass ? `pict-osd-fill-${annotation?.underlying?.target?.fillClass}` : '';
+			return `${colorClass} ${fillClass}`;
 		};
 
 		this.customConfigureViewerSettings();
@@ -229,40 +291,69 @@ class PictSectionOpenSeaDragon extends libPictViewClass
 		{
 			this.viewer.destroy();
 		}
-		this.viewer = OpenSeadragon(this.osdSettings);
-
-		// Inject a stylesheet based on the set of colors passed into the component.
-		let colorStyles = '';
-		if (Object.keys(this.options?.Colors)?.length)
-		{
-			this.colorSet = this.options.Colors;
-			for (let color of Object.keys(this.colorSet))
-			{
-				colorStyles += css`
-					.pict-osd-${ color } > * {
-						stroke: ${ this.colorSet[color] } !important;
-						stroke-width: 2 !important;
-					}
-					.pict-osd-fill-${ color } {
-						fill: ${ this.colorSet[color] } !important;
-					}
-				`;
-			}
-		}
-		else
-		{
-			this.assignColor('red');
-			colorStyles += css`
-				.pict-osd-red > * {
-					stroke: red !important;
-					stroke-width: 2 !important;
-				}
-			`;
-		}
-		this.pict.ContentAssignment.assignContent('#ColorOverrides', colorStyles);
 
 		// We only need to instantiate Annotorious if a set of annotations were passed in, or annotation editing is enabled.
 		this.editingEnabled = this.options.EnableAnnotation && this.toolbarElement;
+
+		this.viewer = OpenSeadragon(this.osdSettings);
+		this.viewer.addHandler('open', () => {
+			// Inject a stylesheet based on the set of colors passed into the component.
+			let colorStyles = '';
+			if (Object.keys(this.options?.Colors)?.length)
+			{
+				this.colorSet = this.options.Colors;
+				for (let color of Object.keys(this.colorSet))
+				{
+					colorStyles += css`
+						.pict-osd-${ color } > * {
+							stroke: ${ this.colorSet[color] } !important;
+							stroke-width: 2 !important;
+						}
+						.pict-osd-fill-${ color }, .pict-osd-fill-${ color } > * {
+							fill: ${ this.colorSet[color] } !important;
+						}
+						.pict-osd-${ color }-hatched > * {
+							stroke: ${ this.colorSet[color] } !important;
+							stroke-width: 2 !important;
+							fill: ${ buildHatchPattern(this.colorSet[color], this.viewer?.world?.getItemAt(0)?.getContentSize() || { x: hatchScale, y: hatchScale }) }
+						}
+					`;
+				}
+			}
+			else
+			{
+				this.assignColor('red');
+				colorStyles += css`
+					.pict-osd-red > * {
+						stroke: red !important;
+						stroke-width: 2 !important;
+					}
+				`;
+			}
+			this.pict.ContentAssignment.assignContent('#ColorOverrides', colorStyles);
+			// If a custom color set was passed via config, add those custom colors to the toolbar if editing is enabled.
+			if (this.colorSet && this.editingEnabled)
+			{
+				let colorSelectorTemplate = ``;
+				for (let color of Object.keys(this.colorSet))
+				{
+					colorSelectorTemplate += html`
+						<button type="button" class="osd-color-button-class" onclick="_Pict.views.${ this.options.ViewAddress || 'OSDSection' }.assignColor('${ color }')" id="ColorSelector${ color }">
+							<div title="Color ${ color }" style="background-color: ${ this.colorSet[color] };" class="osd-color-subcircle"></div>
+						</button>
+					`;
+				}
+				this.pict.ContentAssignment.assignContent('#ColorPickerToolbar', `
+					${ colorSelectorTemplate }
+				`);
+				this.assignColor(Object.keys(this.colorSet)[0]);
+			}
+			else
+			{
+				this.assignColor('red');
+			}
+		});
+
 		if (this.editingEnabled || this.options.Annotations?.length)
 		{
 			this.AnnotationsPanel = this.pict.views?.[this.options.OSDASViewAddress];
@@ -299,6 +390,8 @@ class PictSectionOpenSeaDragon extends libPictViewClass
 				tools: ['circle', 'ellipse', 'rect', 'freehand', 'polygon', 'line']
 			});
 			Annotorious.BetterPolygon(this.annotator);
+			
+			Annotorious.HeadlightPack(this.annotator);
 
 			// If editing is enabled, reflow the ui to include the editing toolbar.
 			if (this.editingEnabled)
@@ -327,38 +420,43 @@ class PictSectionOpenSeaDragon extends libPictViewClass
 			this.annotator.on('createSelection', async (selection) => { this.selectionCreateHook(selection) });
 			this.viewer.addHandler('canvas-double-click', (event) => { this.canvasDoubleClickHook(event); });
 
-			// If a custom color set was passed via config, add those custom colors to the toolbar if editing is enabled.
-			if (this.colorSet && this.editingEnabled)
-			{
-				let colorSelectorTemplate = ``;
-				for (let color of Object.keys(this.colorSet))
-				{
-					colorSelectorTemplate += html`
-						<button type="button" class="osd-color-button-class" onclick="_Pict.views.${ this.options.ViewAddress || 'OSDSection' }.assignColor('${ color }')" id="ColorSelector${ color }">
-							<div style="background-color: ${ this.colorSet[color] };" class="osd-color-subcircle"></div>
-						</button>
-					`;
-				}
-				this.pict.ContentAssignment.assignContent('#ColorPickerToolbar', `
-					${ colorSelectorTemplate }
-				`);
-				this.assignColor(Object.keys(this.colorSet)[0]);
-			}
-			else
-			{
-				this.assignColor('red');
-			}
 			if (this.editingEnabled)
 			{
 				const drawingModeTemplate = html`
-					<input type="checkbox" id="osd-drawmode-toggle" class="osd-drawmode-checkbox" checked onclick="_Pict.views.${ this.options.ViewAddress || 'OSDSection' }.toggleDrawingMode()"/>  
+					<input title="Toggle ${ this.options?.DrawModeLabel || 'Annotation' }" type="checkbox" id="osd-drawmode-toggle" class="osd-drawmode-checkbox" checked onclick="_Pict.views.${ this.options.ViewAddress || 'OSDSection' }.toggleDrawingMode()"/>  
 					<label for="osd-drawmode-toggle" class="osd-drawmode-switch"></label>
-			 		<span class="osd-drawmode-text"> ${ this.options?.DrawModeLabel || 'Annotation' } </span>`;
+			 		<span title="Toggle ${ this.options?.DrawModeLabel || 'Annotation' }" class="osd-drawmode-text"> ${ this.options?.DrawModeLabel || 'Annotation' } </span>
+					<input title="Toggle ${ this.options?.HatchModeLabel || 'Hatching' }" type="checkbox" id="osd-hatchmode-toggle" class="osd-hatchmode-checkbox" onclick="_Pict.views.${ this.options.ViewAddress || 'OSDSection' }.toggleHatchMode()"/>  
+					<label for="osd-hatchmode-toggle" class="osd-hatchmode-switch"></label>
+			 		<span title="Toggle ${ this.options?.HatchModeLabel || 'Hatching' }" class="osd-hatchmode-text"> ${ this.options?.HatchModeLabel || 'Hatching' } </span>`;
 				this.pict.ContentAssignment.assignContent('#DrawingModeToggle', `
 					${ drawingModeTemplate }
 				`);
+				const arrowToolButton = html`
+					<button type="button" class="a9s-toolbar-btn arrow" title="Arrow" aria-label="Create a Arrow annotation" onclick="_Pict.views.${ this.options.ViewAddress || 'OSDSection' }.selectDrawingTool(event, 'arrow')">
+						<span class="a9s-toolbar-btn-inner">
+							<svg viewBox="0 0 70 50">
+								<g>
+									<path d="M 12 47 L 55 14 L 52 10 L 60 10 L 60 18 L 55 14 Z"></path>
+									<g class="handles">
+										<circle cx="12" cy="47" r="5"></circle>
+									</g>
+								</g>
+							</svg>
+						</span>
+					</button>`;
+				this.pict.ContentAssignment.appendContent('#DrawingToolbar .a9s-toolbar', arrowToolButton);
 				this.annotator.disableEditor = false;
 			}
+		}
+		else 
+		{
+			// Instantiate Annotorious then destroy it in case there's any left over state that needs to be cleared.
+			this.annotator = OpenSeadragon.Annotorious(this.viewer, {
+				disableEditor: true,
+				disableSelect: true
+			});	
+			this.annotator.destroy();
 		}
 	}
 
@@ -407,6 +505,11 @@ class PictSectionOpenSeaDragon extends libPictViewClass
 		this.pict.ContentAssignment.addClass(`#ColorSelector${ color }`, 'osd-color-active');
 
 		// Override the annotator drawing styles based on the selected color.
+		if (!this.pict.AppData.Annotations)
+		{
+			this.pict.AppData.Annotations = {};
+		}
+		this.pict.AppData.Annotations.SelectedColorOverride = this.color || 'red';
 		this.pict.ContentAssignment.assignContent('#SelectedColorOverride', css`
 			.a9s-annotation.editable.selected > g > * {
 				stroke: ${ this.colorSet?.[color] || 'red' } !important;
@@ -419,6 +522,9 @@ class PictSectionOpenSeaDragon extends libPictViewClass
 			.a9s-selection > * {
 				stroke: ${ this.colorSet?.[color] || 'red' } !important;
 				stroke-width: 2 !important;
+			}
+			.headlight-a9s-filled > g > * {
+				fill: ${ this.colorSet?.[color] || 'red' } !important;
 			}
 		`);
 	}
@@ -453,7 +559,17 @@ class PictSectionOpenSeaDragon extends libPictViewClass
 	annotationCreationHook (annotation, overrideID)
 	{
 		if (annotation?.target){
-			annotation.stylesheet = 
+			annotation.stylesheet = this.hatchMode ? 
+			{
+				"type": "CssStylesheet",
+				"value": css`
+					.${ this.color }-hatched > * { 
+						stroke: ${ this.colorSet?.[this.color] } !important;
+						stroke-width: 2 !important; 
+						fill: ${ buildHatchPattern(this.colorSet?.[this.color], this.viewer?.world?.getItemAt(0)?.getContentSize() || { x: hatchScale, y: hatchScale }) }
+					}
+				`
+			} :
 			{
 				"type": "CssStylesheet",
 				"value": css`
@@ -463,7 +579,7 @@ class PictSectionOpenSeaDragon extends libPictViewClass
 					}
 				`
 			};
-			annotation.target.styleClass = this.color;
+			annotation.target.styleClass = this.hatchMode ? `${ this.color }-hatched` : this.color;
 		}
 		this.AnnotationsPanel?.updateAnnotationsPanel();
 	}
@@ -471,7 +587,17 @@ class PictSectionOpenSeaDragon extends libPictViewClass
 	// Hook that runs when an annotation gets selected. By default, this just sets the current color to whatever the selected annotation is.
 	annotationSelectionHook (annotation, element)
 	{
-		this.assignColor(annotation?.target?.styleClass || 'red');
+		this.assignColor(annotation?.target?.styleClass?.replace('-hatched', '') || 'red');
+		if (annotation?.target?.styleClass?.includes('hatched'))
+		{
+			document.querySelector('#osd-hatchmode-toggle').checked = true;
+			this.hatchMode = true;
+		}
+		else
+		{
+			document.querySelector('#osd-hatchmode-toggle').checked = false;
+			this.hatchMode = false;
+		}
 		this.releaseAnnotations();
 		this.focusOnAnnotation(annotation.id);
 	}
@@ -548,6 +674,24 @@ class PictSectionOpenSeaDragon extends libPictViewClass
 		{
 			this.annotator.disableEditor = !this.annotator.disableEditor;
 		}
+	}
+
+	// Toggle on/off the hatch fill mode.
+	toggleHatchMode ()
+	{
+		this.hatchMode = !this.hatchMode;
+	}
+
+	selectDrawingTool(event, id)
+	{
+		this.toolbarElement.querySelector('.a9s-toolbar-btn.active')?.classList.remove('active');
+		const button = event.target.closest('button');
+		if (!button?.classList.contains('active'))
+		{
+			button.classList.add('active');
+		}
+		this.annotator.setDrawingTool(id);
+      	this.annotator.setDrawingEnabled(true);
 	}
 
 	// Passes an annotation selection event onto the annotator plus does some extra handling to scroll it into view.

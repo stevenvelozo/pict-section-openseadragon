@@ -1,0 +1,35 @@
+{
+  "name": "annotorious-plugins",
+  "version": "1.0.0",
+  "description": "Custom plugins for the annotorious plugin used with openseadragon.",
+  "author": "Zack Warren",
+  "scripts": {
+    "build": "webpack --mode=development && npm run copy",
+    "copy": "npx copy-files-from-to"
+  },
+  "copyFilesSettings": {
+    "whenFileExists": "overwrite"
+  },
+  "copyFiles": [
+    {
+        "from": "./dist/annotorious-headlight-plugins.js",
+        "to": "../../example_applications/photo_example/dist/annotorious-headlight-plugins.js"
+    }
+  ],
+  "devDependencies": {
+    "@babel/core": "^7.15.8",
+    "@babel/plugin-proposal-class-properties": "^7.14.5",
+    "@babel/preset-env": "^7.15.8",
+    "babel-loader": "^8.2.3",
+    "css-loader": "^6.5.0",
+    "html-webpack-plugin": "^5.5.0",
+    "style-loader": "^3.3.1",
+    "webpack": "^5.60.0",
+    "webpack-cli": "^4.9.1",
+    "webpack-dev-server": "^4.3.1"
+  },
+  "dependencies": {
+    "@recogito/annotorious": "^2.5.9",
+    "quackage": "^1.0.42"
+  }
+}
