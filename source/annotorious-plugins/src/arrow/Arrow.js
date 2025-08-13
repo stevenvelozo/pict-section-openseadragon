@@ -85,15 +85,20 @@ export default class Arrow {
     }
 
 
-    toSelection = () =>
-      new Selection({
+    toSelection = () => 
+    {
+      const color = _Pict?.AppData?.Annotations?.SelectedColorOverride ? 
+        _Pict.AppData.Annotations.SelectedColorOverride : 'red';
+      const styleClass = `${color} pict-osd-fill-${color}`;
+
+      return new Selection({
         ...toSVGTarget(this.group, this.env.image),
         renderedVia: {
           name: 'arrow'
         },
-        fillClass: _Pict?.AppData?.Annotations?.SelectedColorOverride ? _Pict?.AppData?.Annotations?.SelectedColorOverride : 'red'
-      }
-    );
+        styleClass
+      });
+    }
 
     destroy = () => {
       this.group.parentNode.removeChild(this.group);

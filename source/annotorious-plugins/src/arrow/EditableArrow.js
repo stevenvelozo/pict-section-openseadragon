@@ -145,13 +145,16 @@ export default class EditableArrow extends EditableShape {
 
         this.setPoints(updatedPoints);
 
+        const color = _Pict?.AppData?.Annotations?.SelectedColorOverride ? 
+          _Pict.AppData.Annotations.SelectedColorOverride : 'red';
+        const styleClass = `${color} pict-osd-fill-${color}`;
         this.emit('update', 
           new Selection({
             ...toSVGTarget(this.shape, this.env.image),
             renderedVia: {
               name: 'arrow'
             },
-            fillClass: _Pict?.AppData?.Annotations?.SelectedColorOverride ? _Pict?.AppData?.Annotations?.SelectedColorOverride : 'red'
+            styleClass
           })
         );
       }

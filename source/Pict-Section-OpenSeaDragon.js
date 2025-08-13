@@ -279,9 +279,7 @@ class PictSectionOpenSeaDragon extends libPictViewClass
 
 		// Color formatter for Annotorious. Works with the styleClass attribute and the color class system which is config based.
 		this.format = (annotation) => {
-			const colorClass = 'pict-osd-' + (annotation?.underlying?.target?.styleClass || (this.hatchMode ? this.color + '-hatched' : this.color) || 'red');
-			const fillClass = annotation?.underlying?.target?.fillClass ? `pict-osd-fill-${annotation?.underlying?.target?.fillClass}` : '';
-			return `${colorClass} ${fillClass}`;
+			return 'pict-osd-' + (annotation?.underlying?.target?.styleClass || (this.hatchMode ? this.color + '-hatched' : this.color) || 'red');
 		};
 
 		this.customConfigureViewerSettings();
