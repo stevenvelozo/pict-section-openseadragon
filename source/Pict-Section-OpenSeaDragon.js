@@ -521,7 +521,7 @@ class PictSectionOpenSeaDragon extends libPictViewClass
 				stroke: ${ this.colorSet?.[color] || 'red' } !important;
 				stroke-width: 2 !important;
 			}
-			.headlight-a9s-filled > g > * {
+			.pict-a9s-filled > g > * {
 				fill: ${ this.colorSet?.[color] || 'red' } !important;
 			}
 		`);

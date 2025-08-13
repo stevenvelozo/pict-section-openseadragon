@@ -1,4 +1,4 @@
-# Headlight Annotorious Plugins
+# Pict Annotorious Plugins
 
 ## Adding a new custom tool
 

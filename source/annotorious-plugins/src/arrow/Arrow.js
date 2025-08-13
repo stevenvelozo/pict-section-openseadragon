@@ -18,10 +18,10 @@ export default class Arrow {
       this.env = env;
 
       this.group = document.createElementNS(SVG_NAMESPACE, 'g');
-      this.group.setAttribute('class', 'headlight-a9s-filled');
+      this.group.setAttribute('class', 'pict-a9s-filled');
 
       this.Line = document.createElementNS(SVG_NAMESPACE, 'g');
-      this.Line.setAttribute('class', 'a9s-selection headlight-arrow');
+      this.Line.setAttribute('class', 'a9s-selection pict-arrow');
 
       this.outer = document.createElementNS(SVG_NAMESPACE, 'path');
       this.outer.setAttribute('class', 'a9s-outer');

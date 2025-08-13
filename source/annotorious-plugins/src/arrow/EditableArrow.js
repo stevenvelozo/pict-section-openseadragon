@@ -53,7 +53,7 @@ export default class EditableArrow extends EditableShape {
     this.containerGroup.appendChild(this.mask.element);
 
     this.elementGroup = document.createElementNS(SVG_NAMESPACE, 'g');
-    this.elementGroup.setAttribute('class', 'a9s-annotation editable selected headlight-a9s-filled');
+    this.elementGroup.setAttribute('class', 'a9s-annotation editable selected pict-a9s-filled');
     this.elementGroup.setAttribute('data-id', annotation.id);
     this.elementGroup.appendChild(this.shape);
 
