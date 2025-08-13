@@ -8,7 +8,7 @@ Adding a new tool involves creating a tool that can be integrated with Annotorio
 2. In `src/index.js` add your tool's ID to the `ALL_TOOLS` variable, and handle adding it in the for loop below.
 3. In `Pict-Section-OpenSeaDragion.js::onAfterRender` you'll need to manually create an SVG icon for your tool that will be seen in the toolbar (see the `arrowToolButton` variable for an example).
 
-Running `npm run build` will build your tool into the `HeadlightPack` that Pict uses.
+Running `npm run build` will build your tool into the `PictPack` that Pict uses.
 * Note: you can tell Pict which tools to use by passing in a config variable.
 
 

@@ -11,7 +11,7 @@ module.exports = {
   entry: resolveAppPath('src'),
   output: {
     filename: 'annotorious-pict-plugins.js',
-    library: ['Annotorious', 'HeadlightPack'],
+    library: ['Annotorious', 'PictPack'],
     libraryTarget: 'umd',
     libraryExport: 'default'
   },

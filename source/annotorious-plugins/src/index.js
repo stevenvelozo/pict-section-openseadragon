@@ -4,7 +4,7 @@ const ALL_TOOLS = new Set([
   'arrow',
 ]);
 
-const HeadlightPack = (anno, config) => {
+const PictPack = (anno, config) => {
 
   // Add configured tools, or all
   const tools = config?.tools ? 
@@ -17,4 +17,4 @@ const HeadlightPack = (anno, config) => {
 
 }
 
-export default HeadlightPack;
+export default PictPack;
