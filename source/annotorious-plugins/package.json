@@ -12,8 +12,8 @@
   },
   "copyFiles": [
     {
-        "from": "./dist/annotorious-headlight-plugins.js",
-        "to": "../../example_applications/photo_example/dist/annotorious-headlight-plugins.js"
+        "from": "./dist/annotorious-pict-plugins.js",
+        "to": "../../example_applications/photo_example/dist/annotorious-pict-plugins.js"
     }
   ],
   "devDependencies": {
