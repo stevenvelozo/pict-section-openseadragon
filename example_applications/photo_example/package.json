@@ -54,6 +54,7 @@
         "pict": "^1.0.210",
         "pict-application": "^1.0.19",
         "pict-view": "^1.0.51",
+        "quackage": "^1.0.42",
         "@recogito/annotorious-openseadragon": "^2.7.18",
         "@recogito/annotorious-toolbar": "^1.2.1",
         "@recogito/annotorious-better-polygon": "0.2.0",

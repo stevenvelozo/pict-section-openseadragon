@@ -16,7 +16,6 @@ function buildHatchPattern(color, bounds)
 			</pattern>
 		</svg>
 	`;
-	console.log('Scaling: ', scale);
 	return "url('data:image/svg+xml;utf8, " + encodeURIComponent(svg) + "#hatch') !important;";
 }
 
@@ -388,6 +387,11 @@ class PictSectionOpenSeaDragon extends libPictViewClass
 				tools: ['circle', 'ellipse', 'rect', 'freehand', 'polygon', 'line']
 			});
 			Annotorious.BetterPolygon(this.annotator);
+			
+			if (Annotorious.PictPack)
+			{
+				Annotorious.PictPack(this.annotator);
+			}
 
 			// If editing is enabled, reflow the ui to include the editing toolbar.
 			if (this.editingEnabled)
@@ -428,6 +432,20 @@ class PictSectionOpenSeaDragon extends libPictViewClass
 				this.pict.ContentAssignment.assignContent('#DrawingModeToggle', `
 					${ drawingModeTemplate }
 				`);
+				const arrowToolButton = html`
+					<button type="button" class="a9s-toolbar-btn arrow" title="Arrow" aria-label="Create a Arrow annotation" onclick="_Pict.views.${ this.options.ViewAddress || 'OSDSection' }.selectDrawingTool(event, 'arrow')">
+						<span class="a9s-toolbar-btn-inner">
+							<svg viewBox="0 0 70 50">
+								<g>
+									<path d="M 12 47 L 55 14 L 52 10 L 60 10 L 60 18 L 55 14 Z"></path>
+									<g class="handles">
+										<circle cx="12" cy="47" r="5"></circle>
+									</g>
+								</g>
+							</svg>
+						</span>
+					</button>`;
+				this.pict.ContentAssignment.appendContent('#DrawingToolbar .a9s-toolbar', arrowToolButton);
 				this.annotator.disableEditor = false;
 			}
 		}
@@ -654,6 +672,18 @@ class PictSectionOpenSeaDragon extends libPictViewClass
 	toggleHatchMode ()
 	{
 		this.hatchMode = !this.hatchMode;
+	}
+
+	selectDrawingTool(event, id)
+	{
+		this.toolbarElement.querySelector('.a9s-toolbar-btn.active')?.classList.remove('active');
+		const button = event.target.closest('button');
+		if (!button?.classList.contains('active'))
+		{
+			button.classList.add('active');
+		}
+		this.annotator.setDrawingTool(id);
+      	this.annotator.setDrawingEnabled(true);
 	}
 
 	// Passes an annotation selection event onto the annotator plus does some extra handling to scroll it into view.
