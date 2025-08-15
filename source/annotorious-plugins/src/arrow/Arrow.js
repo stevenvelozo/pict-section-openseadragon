@@ -18,7 +18,6 @@ export default class Arrow {
       this.env = env;
 
       this.group = document.createElementNS(SVG_NAMESPACE, 'g');
-      this.group.setAttribute('class', 'pict-a9s-filled');
 
       this.Line = document.createElementNS(SVG_NAMESPACE, 'g');
       this.Line.setAttribute('class', 'a9s-selection pict-arrow');
@@ -87,16 +86,11 @@ export default class Arrow {
 
     toSelection = () => 
     {
-      const color = _Pict?.AppData?.Annotations?.SelectedColorOverride ? 
-        _Pict.AppData.Annotations.SelectedColorOverride : 'red';
-      const styleClass = `${color} pict-osd-fill-${color}`;
-
       return new Selection({
         ...toSVGTarget(this.group, this.env.image),
         renderedVia: {
           name: 'arrow'
         },
-        styleClass
       });
     }
 

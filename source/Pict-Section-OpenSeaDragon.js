@@ -306,7 +306,7 @@ class PictSectionOpenSeaDragon extends libPictViewClass
 							stroke: ${ this.colorSet[color] } !important;
 							stroke-width: 2 !important;
 						}
-						.pict-osd-fill-${ color }, .pict-osd-fill-${ color } > * {
+						.pict-osd-fill-${ color } {
 							fill: ${ this.colorSet[color] } !important;
 						}
 						.pict-osd-${ color }-hatched > * {
@@ -519,9 +519,6 @@ class PictSectionOpenSeaDragon extends libPictViewClass
 			.a9s-selection > * {
 				stroke: ${ this.colorSet?.[color] || 'red' } !important;
 				stroke-width: 2 !important;
-			}
-			.pict-a9s-filled > g > * {
-				fill: ${ this.colorSet?.[color] || 'red' } !important;
 			}
 		`);
 	}

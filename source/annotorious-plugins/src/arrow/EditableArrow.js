@@ -51,7 +51,7 @@ export default class EditableArrow extends EditableShape {
     this.containerGroup.appendChild(this.mask.element);
 
     this.elementGroup = document.createElementNS(SVG_NAMESPACE, 'g');
-    this.elementGroup.setAttribute('class', 'a9s-annotation editable selected pict-a9s-filled');
+    this.elementGroup.setAttribute('class', 'a9s-annotation editable selected');
     this.elementGroup.setAttribute('data-id', annotation.id);
     this.elementGroup.appendChild(this.shape);
 
@@ -140,16 +140,12 @@ export default class EditableArrow extends EditableShape {
 
         this.setPoints(updatedPoints);
 
-        const color = _Pict?.AppData?.Annotations?.SelectedColorOverride ? 
-          _Pict.AppData.Annotations.SelectedColorOverride : 'red';
-        const styleClass = `${color} pict-osd-fill-${color}`;
         this.emit('update', 
           new Selection({
             ...toSVGTarget(this.shape, this.env.image),
             renderedVia: {
               name: 'arrow'
             },
-            styleClass
           })
         );
       }
