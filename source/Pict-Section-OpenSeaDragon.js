@@ -388,7 +388,10 @@ class PictSectionOpenSeaDragon extends libPictViewClass
 			});
 			Annotorious.BetterPolygon(this.annotator);
 			
-			Annotorious.PictPack(this.annotator);
+			if (Annotorious.PictPack)
+			{
+				Annotorious.PictPack(this.annotator);
+			}
 
 			// If editing is enabled, reflow the ui to include the editing toolbar.
 			if (this.editingEnabled)
