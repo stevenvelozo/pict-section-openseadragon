@@ -502,11 +502,6 @@ class PictSectionOpenSeaDragon extends libPictViewClass
 		this.pict.ContentAssignment.addClass(`#ColorSelector${ color }`, 'osd-color-active');
 
 		// Override the annotator drawing styles based on the selected color.
-		if (!this.pict.AppData.Annotations)
-		{
-			this.pict.AppData.Annotations = {};
-		}
-		this.pict.AppData.Annotations.SelectedColorOverride = this.color || 'red';
 		this.pict.ContentAssignment.assignContent('#SelectedColorOverride', css`
 			.a9s-annotation.editable.selected > g > * {
 				stroke: ${ this.colorSet?.[color] || 'red' } !important;
