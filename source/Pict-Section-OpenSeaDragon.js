@@ -16,7 +16,6 @@ function buildHatchPattern(color, bounds)
 			</pattern>
 		</svg>
 	`;
-	console.log('Scaling: ', scale);
 	return "url('data:image/svg+xml;utf8, " + encodeURIComponent(svg) + "#hatch') !important;";
 }
 

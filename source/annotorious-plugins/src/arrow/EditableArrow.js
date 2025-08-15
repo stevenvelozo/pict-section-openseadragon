@@ -13,11 +13,9 @@ import {
 const getPoints = shape => {
   const d = shape.querySelector('.a9s-inner').getAttribute('d');
   const pointList = d.split('L');
-  console.log(d, pointList);
   const points = [];
   if(pointList.length > 0) {
-    // The tip of the arrow, index 0 is where the triangle meets the line of the arrow
-    var beginPoint = pointList[2].trim().split(' ');
+    var beginPoint = pointList[0].substr(1).trim().split(' ');
     points.push([parseFloat(beginPoint[0]), parseFloat(beginPoint[1])]);
     var endPoint = pointList[pointList.length - 1].trim().split(' ');
     points.push([parseFloat(endPoint[0]), parseFloat(endPoint[1])]);
@@ -98,7 +96,6 @@ export default class EditableArrow extends EditableShape {
     if (evt.button !== 0) return;  // left click
     this.grabbedElem = grabbedElem;
     this.grabbedAt = this.getSVGPoint(evt);
-    console.log('onGrab', this.grabbedElem, this.grabbedAt);
   }
 
   onMouseMove = evt => {
@@ -126,8 +123,6 @@ export default class EditableArrow extends EditableShape {
           }
           return pt;
         });
-        console.log(pointIndex);
-        console.log(updatedPoints[0], updatedPoints[1]);
 
         this.grabbedAt = pos;
 

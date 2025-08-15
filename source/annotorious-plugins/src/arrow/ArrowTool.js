@@ -39,16 +39,16 @@ export const linePointsToArrowPath = (points, arrowConfig) => {
   const arrowPoint = points[0];
   const arrowHeight = Math.min(Math.max(lineLength * .1, arrowConfig.minHeight), arrowConfig.maxHeight);
   const arrowCoords = [
-    // start at point where line will meet arrowhead
-    [arrowPoint[0] + arrowHeight, arrowPoint[1]],
-    // left corner
+    // start at arrow point
+    arrowPoint,
+    // left side
     [arrowPoint[0] + arrowHeight, arrowPoint[1] + arrowHeight/2],
     // arrowpoint
     arrowPoint,
-    // right corner
+    // right side
     [arrowPoint[0] + arrowHeight, arrowPoint[1] - arrowHeight/2],
-    // back to start point
-    [arrowPoint[0] + arrowHeight, arrowPoint[1]]
+    // arrow point
+    arrowPoint,
   ].map(pt => {
     if (points.length > 1)
     {
@@ -60,7 +60,7 @@ export const linePointsToArrowPath = (points, arrowConfig) => {
   // Draw line
   var headStr = arrowCoords.map(pt => `L${pt[0]} ${pt[1]}`).join(' ');
   var bodyStr = points.map(pt => `L${pt[0]} ${pt[1]}`).join(' ');
-  var str = `M ${headStr.substring(1)} Z ${bodyStr}`;
+  var str = `M ${headStr.substring(1)} ${bodyStr}`;
   return str;
 }
 
@@ -86,7 +86,6 @@ export default class ArrowTool extends Tool {
     this.arrow.dragTo([ x, y ]);
 
   onMouseUp = (x, y, evt) => {
-    console.log('onMouseUp', x, y, this.arrow.points);
     this.arrow.addPoint([ x, y ]); 
     // check if both coordinates are same
     if (this.arrow.points[0] == this.arrow.points[2] && this.arrow.points[1] == this.arrow.points[3]) {
