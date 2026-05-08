@@ -90,7 +90,7 @@ const default_configuration =
 						left : 20px;
 					}
 					.osd-drawmode-checkbox:checked + .osd-drawmode-switch {
-						background-color: #7983ff;
+						background-color: var(--theme-color-brand-primary, #7983ff);
 					}
 					.osd-drawmode-checkbox {
 						display : none;
@@ -130,7 +130,7 @@ const default_configuration =
 						left : 20px;
 					}
 					.osd-hatchmode-checkbox:checked + .osd-hatchmode-switch {
-						background-color: #7983ff;
+						background-color: var(--theme-color-brand-primary, #7983ff);
 					}
 					.osd-hatchmode-checkbox {
 						display : none;
