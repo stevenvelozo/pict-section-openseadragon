@@ -59,5 +59,13 @@
         "@recogito/annotorious-toolbar": "^1.2.1",
         "@recogito/annotorious-better-polygon": "0.2.0",
         "@recogito/annotorious-selector-pack": "0.6.1"
+    },
+    "retold": {
+        "ExampleApplication": {
+            "Stage": true,
+            "Title": "Photo Example",
+            "Summary": "Deep-zoom image viewer with W3C Web Annotation overlays, drawing toolbar, and a comment side panel.",
+            "Complexity": "Basic"
+        }
     }
 }

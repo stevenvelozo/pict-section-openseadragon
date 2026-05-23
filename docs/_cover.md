@@ -15,3 +15,9 @@ Wraps OpenSeaDragon and Annotorious as a first-class Pict view. Drop it into any
 [Quick Start](quickstart.md)
 [Architecture](architecture.md)
 [GitHub](https://github.com/stevenvelozo/pict-section-openseadragon)
+
+<!-- docuserve:examples:start -->
+| Example | Complexity | Launch |
+|---------|------------|--------|
+| [Photo Example](examples/photo%5Fexample/README.md) | Basic | [&#9654; Launch](examples/photo%5Fexample/index.html) |
+<!-- docuserve:examples:end -->

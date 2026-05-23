@@ -1,5 +1,5 @@
 {
-	"Generated": "2026-05-22T05:45:56.100Z",
+	"Generated": "2026-05-23T01:51:15.211Z",
 	"Mode": "module",
 	"GitHubOrg": "stevenvelozo",
 	"DefaultBranch": "master",
@@ -50,27 +50,36 @@
 				]
 			},
 			{
+				"Title": "Examples",
+				"Children": [
+					{
+						"Title": "Photo Example",
+						"Path": "examples/photo_example/README.md"
+					}
+				]
+			},
+			{
 				"Title": "Retold Ecosystem",
 				"Children": [
 					{
 						"Title": "Pict",
-						"Path": "pict/pict/README.md"
+						"Path": "https://stevenvelozo.github.io/pict/README.md"
 					},
 					{
 						"Title": "Pict View",
-						"Path": "pict/pict-view/README.md"
+						"Path": "https://stevenvelozo.github.io/pict-view/README.md"
 					},
 					{
 						"Title": "Pict Application",
-						"Path": "pict/pict-application/README.md"
+						"Path": "https://stevenvelozo.github.io/pict-application/README.md"
 					},
 					{
 						"Title": "Pict Template",
-						"Path": "pict/pict-template/README.md"
+						"Path": "https://stevenvelozo.github.io/pict-template/README.md"
 					},
 					{
 						"Title": "Fable",
-						"Path": "fable/fable/README.md"
+						"Path": "https://stevenvelozo.github.io/fable/README.md"
 					}
 				]
 			}
@@ -88,6 +97,10 @@
 			"architecture.md",
 			"code-snippets.md",
 			"configuration.md",
+			"examples/README.md",
+			"examples/photo_example/README.md",
+			"examples/photo_example/index.html",
+			"examples/photo_example/simple_imageviewer.min.js",
 			"index.html",
 			"quickstart.md",
 			"retold-catalog.json",
