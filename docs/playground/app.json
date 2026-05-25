@@ -1,0 +1,6 @@
+{
+	"Name": "OpenSeaDragon Playground",
+	"Hash": "OpenSeaDragonPlayground",
+	"MainViewportViewIdentifier": "OpenSeaDragon",
+	"AutoRenderMainViewportViewAfterInitialize": false
+}

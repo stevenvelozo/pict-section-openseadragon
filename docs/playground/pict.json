@@ -1,0 +1,86 @@
+{
+	"Product": "OpenSeaDragonPlayground",
+	"OpenSeaDragonViewConfig":
+	{
+		"EnableAnnotation":   true,
+		"DisableFullscreen":  true,
+		"PrefixUrl":          "https://openseadragon.github.io/openseadragon/images/",
+		"ViewAddress":        "OpenSeaDragon",
+		"OSDASViewAddress":   "OpenSeaDragonAnnotationSelector",
+		"TileSources":
+		{
+			"Image":
+			{
+				"xmlns":    "http://schemas.microsoft.com/deepzoom/2008",
+				"Url":      "https://openseadragon.github.io/example-images/duomo/duomo_files/",
+				"Format":   "jpg",
+				"Overlap":  "2",
+				"TileSize": "256",
+				"Size":
+				{
+					"Width":  "13920",
+					"Height": "10200"
+				}
+			}
+		},
+		"Colors":
+		{
+			"red":         "red",
+			"green":       "green",
+			"blue":        "blue",
+			"cyan":        "#4dd0e1",
+			"deep-purple": "#673ab7",
+			"pink":        "#ff4081"
+		},
+		"Annotations":
+		[
+			{
+				"@context": "http://www.w3.org/ns/anno.jsonld",
+				"type":     "Annotation",
+				"body":     [],
+				"stylesheet":
+				{
+					"type":  "CssStylesheet",
+					"value": ".pink > * { stroke: #ff4081 !important; stroke-width: 2 !important; }"
+				},
+				"target":
+				{
+					"source":   "",
+					"selector":
+					{
+						"type":       "FragmentSelector",
+						"conformsTo": "http://www.w3.org/TR/media-frags/",
+						"value":      "xywh=pixel:2645.4,3208.5,4804.7,3968.4"
+					},
+					"styleClass": "pink"
+				},
+				"id": "#aba6a91a-9780-4e7b-9a3d-5380423162c7"
+			},
+			{
+				"@context": "http://www.w3.org/ns/anno.jsonld",
+				"type":     "Annotation",
+				"body":
+				[
+					{ "type": "TextualBody", "value": "Look at this dome!", "purpose": "commenting" },
+					{ "type": "TextualBody", "value": "architecture",       "purpose": "tagging"    }
+				],
+				"stylesheet":
+				{
+					"type":  "CssStylesheet",
+					"value": ".deep-purple > * { stroke: #673ab7 !important; stroke-width: 2 !important; }"
+				},
+				"target":
+				{
+					"source":   "",
+					"selector":
+					{
+						"type":  "SvgSelector",
+						"value": "<svg><ellipse cx=\"7838.7\" cy=\"6904.5\" rx=\"2798.6\" ry=\"1622.3\"></ellipse></svg>"
+					},
+					"styleClass": "deep-purple"
+				},
+				"id": "#1632ac19-51f2-4fa5-b3b7-5e6382c4ff2e"
+			}
+		]
+	}
+}

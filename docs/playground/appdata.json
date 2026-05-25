@@ -1,0 +1,6 @@
+{
+	"OpenSeaDragon":
+	{
+		"Notes": "AppData is unused by the OpenSeaDragon view — its TileSources, Colors, and Annotations live in OpenSeaDragonViewConfig (Pict Config tab). This editor stays here for parity with the other playgrounds."
+	}
+}
