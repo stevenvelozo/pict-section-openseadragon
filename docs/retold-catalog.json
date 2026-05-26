@@ -1,7 +1,7 @@
 {
-	"Generated": "2026-05-23T01:51:15.211Z",
+	"Generated": "2026-05-26T18:24:39.383Z",
 	"Mode": "module",
-	"GitHubOrg": "stevenvelozo",
+	"GitHubOrg": "fable-retold",
 	"DefaultBranch": "master",
 	"Module": {
 		"Name": "pict-section-openseadragon",
@@ -89,6 +89,7 @@
 			"README.md",
 			"_brand.json",
 			"_cover.md",
+			"_playground.json",
 			"_sidebar.md",
 			"_topbar.md",
 			"_version.json",
@@ -102,6 +103,14 @@
 			"examples/photo_example/index.html",
 			"examples/photo_example/simple_imageviewer.min.js",
 			"index.html",
+			"playground/app.json",
+			"playground/appdata.json",
+			"playground/application.js",
+			"playground/pict.json",
+			"playground/runtime/pict-application.min.js",
+			"playground/runtime/pict-section-modal.min.js",
+			"playground/runtime/pict-section-openseadragon.min.js",
+			"playground/runtime/pict.min.js",
 			"quickstart.md",
 			"retold-catalog.json",
 			"retold-keyword-index.json"
