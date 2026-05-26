@@ -71,7 +71,7 @@ this.osdSettings =
 
 Override `customConfigureViewerSettings()` in a subclass to mutate `this.osdSettings` (add `gestureSettingsMouse`, `navImages`, `crossOriginPolicy`, `minZoomLevel`, etc.) before the viewer is constructed.
 
-For a full list of accepted OpenSeaDragon keys, see the module's raw reference at [`source/OpenSeaDragon-Configuration.md`](https://github.com/stevenvelozo/pict-section-openseadragon/blob/master/source/OpenSeaDragon-Configuration.md) or the upstream OpenSeaDragon [Options documentation](https://openseadragon.github.io/docs/OpenSeadragon.html#.Options).
+For a full list of accepted OpenSeaDragon keys, see the module's raw reference at [`source/OpenSeaDragon-Configuration.md`](https://github.com/fable-retold/pict-section-openseadragon/blob/master/source/OpenSeaDragon-Configuration.md) or the upstream OpenSeaDragon [Options documentation](https://openseadragon.github.io/docs/OpenSeadragon.html#.Options).
 
 ## Forwarded Annotorious Settings
 

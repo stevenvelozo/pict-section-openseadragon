@@ -1,8 +1,8 @@
 # Pict Section OpenSeaDragon
 
-> **[&#9654; Read the Pict-Section-Openseadragon Documentation](https://stevenvelozo.github.io/pict-section-openseadragon/)** &mdash; interactive docs with the full API reference.
+> **[&#9654; Read the Pict-Section-Openseadragon Documentation](https://fable-retold.github.io/pict-section-openseadragon/)** &mdash; interactive docs with the full API reference.
 
-[![Build Status](https://github.com/stevenvelozo/pict-section-openseadragon/workflows/Tests/badge.svg)](https://github.com/stevenvelozo/pict-section-openseadragon/actions)
+[![Build Status](https://github.com/fable-retold/pict-section-openseadragon/workflows/Tests/badge.svg)](https://github.com/fable-retold/pict-section-openseadragon/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ---
@@ -140,11 +140,11 @@ npm run coverage
 
 ## Related Packages
 
-- [pict](https://github.com/stevenvelozo/pict) -- MVC application framework
-- [pict-view](https://github.com/stevenvelozo/pict-view) -- View base class this module extends
-- [pict-application](https://github.com/stevenvelozo/pict-application) -- Application host and lifecycle
-- [pict-template](https://github.com/stevenvelozo/pict-template) -- Template engine
-- [fable](https://github.com/stevenvelozo/fable) -- Core service ecosystem
+- [pict](https://github.com/fable-retold/pict) -- MVC application framework
+- [pict-view](https://github.com/fable-retold/pict-view) -- View base class this module extends
+- [pict-application](https://github.com/fable-retold/pict-application) -- Application host and lifecycle
+- [pict-template](https://github.com/fable-retold/pict-template) -- Template engine
+- [fable](https://github.com/fable-retold/fable) -- Core service ecosystem
 
 ## License
 

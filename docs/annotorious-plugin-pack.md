@@ -1,6 +1,6 @@
 # Annotorious Plugin Pack
 
-`pict-section-openseadragon` ships with a custom [Annotorious](https://annotorious.github.io/) plugin pack that adds drawing tools not included in the stock distribution. The pack is built from the sources in [`source/annotorious-plugins/`](https://github.com/stevenvelozo/pict-section-openseadragon/tree/master/source/annotorious-plugins) into a single browser bundle that registers `window.Annotorious.PictPack`.
+`pict-section-openseadragon` ships with a custom [Annotorious](https://annotorious.github.io/) plugin pack that adds drawing tools not included in the stock distribution. The pack is built from the sources in [`source/annotorious-plugins/`](https://github.com/fable-retold/pict-section-openseadragon/tree/master/source/annotorious-plugins) into a single browser bundle that registers `window.Annotorious.PictPack`.
 
 When `Annotorious.PictPack` is present on the page, the view calls it during `onAfterRender`:
 

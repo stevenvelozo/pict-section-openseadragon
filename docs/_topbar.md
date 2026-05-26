@@ -6,4 +6,4 @@
 - [Configuration](configuration.md)
 - [API Reference](api-reference.md)
 - [Code Snippets](code-snippets.md)
-- [GitHub](https://github.com/stevenvelozo/pict-section-openseadragon)
+- [GitHub](https://github.com/fable-retold/pict-section-openseadragon)

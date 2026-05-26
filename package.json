@@ -15,14 +15,14 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/stevenvelozo/pict-section-openseadragon.git"
+        "url": "git+https://github.com/fable-retold/pict-section-openseadragon.git"
     },
     "author": "steven velozo <steven@velozo.com>",
     "license": "MIT",
     "bugs": {
-        "url": "https://github.com/stevenvelozo/pict-section-openseadragon/issues"
+        "url": "https://github.com/fable-retold/pict-section-openseadragon/issues"
     },
-    "homepage": "https://github.com/stevenvelozo/pict-section-openseadragon#readme",
+    "homepage": "https://github.com/fable-retold/pict-section-openseadragon#readme",
     "devDependencies": {
         "bower": "^1.8.14",
         "browser-env": "^3.3.0",
