@@ -1,6 +1,6 @@
 # Pict Section OpenSeaDragon
 
-> **[&#9654; Read the Pict-Section-Openseadragon Documentation](https://fable-retold.github.io/pict-section-openseadragon/)** &mdash; interactive docs with the full API reference.
+> **[Read the Pict-Section-Openseadragon Documentation](https://fable-retold.github.io/pict-section-openseadragon/)** - interactive docs with the full API reference.
 
 [![Build Status](https://github.com/fable-retold/pict-section-openseadragon/workflows/Tests/badge.svg)](https://github.com/fable-retold/pict-section-openseadragon/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
