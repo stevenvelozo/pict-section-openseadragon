@@ -1,6 +1,6 @@
 # Architecture
 
-Pict Section OpenSeaDragon is built as a thin adapter between the [Pict](https://github.com/fable-retold/pict) MVC framework and two external browser libraries: [OpenSeaDragon](https://openseadragon.github.io/) (deep-zoom image viewer) and [Annotorious](https://annotorious.github.io/) (W3C Web Annotation editor). The adapter lives in two `pict-view` subclasses and a bundle of custom Annotorious tools.
+Pict Section OpenSeaDragon is built as a thin adapter between the [Pict](https://fable-retold.github.io/pict/) MVC framework and two external browser libraries: [OpenSeaDragon](https://openseadragon.github.io/) (deep-zoom image viewer) and [Annotorious](https://annotorious.github.io/) (W3C Web Annotation editor). The adapter lives in two `pict-view` subclasses and a bundle of custom Annotorious tools.
 
 ## Module Map
 

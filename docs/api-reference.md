@@ -2,7 +2,7 @@
 
 Every developer-facing method on `PictSectionOpenSeaDragon` and its sibling view, grouped by responsibility. Signatures follow the source in `source/Pict-Section-OpenSeaDragon.js`.
 
-All methods below are instance methods on a view registered under `_Pict.views[ViewAddress]`. `PictSectionOpenSeaDragon` extends [`pict-view`](https://github.com/fable-retold/pict-view), so it inherits `render()`, `solve()`, `initialize()`, and the other standard lifecycle methods as well.
+All methods below are instance methods on a view registered under `_Pict.views[ViewAddress]`. `PictSectionOpenSeaDragon` extends [`pict-view`](https://fable-retold.github.io/pict-view/), so it inherits `render()`, `solve()`, `initialize()`, and the other standard lifecycle methods as well.
 
 ## Lifecycle & Rendering
 
