@@ -4,37 +4,8 @@ Pict Section OpenSeaDragon is built as a thin adapter between the [Pict](https:/
 
 ## Module Map
 
-```mermaid
-graph TB
-	subgraph "Host Pict Application"
-		PICT["Pict Instance<br/>(_Pict)"]
-		CA["ContentAssignment<br/>service"]
-	end
-	subgraph "pict-section-openseadragon"
-		OSD_VIEW["PictSectionOpenSeaDragon<br/>(source/Pict-Section-OpenSeaDragon.js)"]
-		AS_VIEW["PictSectionOpenSeaDragonAnnotationSelector<br/>(source/Pict-Section-OpenSeaDragonAnnotationSelector.js)"]
-		PICTPACK["Annotorious.PictPack<br/>(source/annotorious-plugins)"]
-	end
-	subgraph "Browser Globals"
-		OSDLIB["OpenSeadragon"]
-		ANNO["OpenSeadragon.Annotorious"]
-		SELPACK["Annotorious.SelectorPack"]
-		BP["Annotorious.BetterPolygon"]
-		TB["Annotorious.Toolbar"]
-	end
-
-	PICT -->|"addView"| OSD_VIEW
-	PICT -->|"addView"| AS_VIEW
-	OSD_VIEW -->|"uses"| CA
-	AS_VIEW -->|"uses"| CA
-	OSD_VIEW -->|"instantiates"| OSDLIB
-	OSD_VIEW -->|"instantiates"| ANNO
-	OSD_VIEW -->|"registers plugins"| SELPACK
-	OSD_VIEW -->|"registers plugins"| BP
-	OSD_VIEW -->|"registers plugins"| PICTPACK
-	OSD_VIEW -->|"mounts toolbar"| TB
-	OSD_VIEW -->|"updates panel"| AS_VIEW
-```
+<!-- bespoke diagram: edit diagrams/module-map.mmd or .hints.json, then: npx pict-renderer-graph build modules/pict/pict-section-openseadragon/docs -->
+![Module Map](diagrams/module-map.svg)
 
 ## Class Hierarchy
 
@@ -114,70 +85,13 @@ classDiagram
 
 ## Rendering Lifecycle
 
-```mermaid
-sequenceDiagram
-	participant App as Host Pict App
-	participant View as PictSectionOpenSeaDragon
-	participant CA as ContentAssignment
-	participant OSD as OpenSeadragon
-	participant Anno as Annotorious
-	participant Panel as AnnotationSelector
-
-	App->>View: new View(fable, options, services)
-	View->>View: Object.assign(default_configuration, options)
-	App->>View: render()
-	View->>View: onBeforeInitialize()
-	View->>CA: assignContent(template, #OpenSeaDragon-Container-Div)
-	View->>View: onAfterRender(renderable)
-	View->>CA: getElement(#OpenSeaDragon-Element)
-	View->>CA: getElement(#DrawingToolbar)
-	View->>View: build osdSettings + customConfigureViewerSettings()
-	View->>OSD: OpenSeadragon(osdSettings)
-	OSD-->>View: viewer instance
-	View->>OSD: addHandler('open', ...)
-	OSD-->>View: tiles loaded
-	View->>CA: assignContent(#ColorOverrides, generated CSS)
-	View->>CA: assignContent(#ColorPickerToolbar, color buttons)
-	View->>View: assignColor(first color)
-	alt EnableAnnotation or initial Annotations
-		View->>Anno: OpenSeadragon.Annotorious(viewer, annoSettings)
-		View->>Anno: SelectorPack + BetterPolygon + PictPack
-		View->>Anno: on('createAnnotation' / 'selectAnnotation' / ...)
-		View->>OSD: addHandler('canvas-double-click', ...)
-		View->>Panel: updateAnnotationsPanel()
-	end
-```
+<!-- bespoke diagram: edit diagrams/rendering-lifecycle.mmd or .hints.json, then: npx pict-renderer-graph build modules/pict/pict-section-openseadragon/docs -->
+![Rendering Lifecycle](diagrams/rendering-lifecycle.svg)
 
 ## Annotation Event Flow
 
-```mermaid
-sequenceDiagram
-	participant User
-	participant Toolbar as Annotorious Toolbar
-	participant Anno as Annotorious
-	participant View as PictSectionOpenSeaDragon
-	participant Panel as AnnotationSelector
-
-	User->>Toolbar: click shape tool (e.g. arrow)
-	Toolbar->>View: selectDrawingTool(event, 'arrow')
-	View->>Anno: setDrawingTool('arrow')
-	View->>Anno: setDrawingEnabled(true)
-
-	User->>Anno: draw on canvas
-	Anno->>View: createAnnotation(annotation, overrideID)
-	View->>View: annotationCreationHook()
-	View->>View: attach stylesheet + styleClass (color or color-hatched)
-	View->>Panel: updateAnnotationsPanel()
-	Panel->>Panel: render comments / tags list
-
-	User->>Panel: click comment
-	Panel->>View: selectAnnotation(id)
-	View->>Anno: selectAnnotation(id)
-	View->>View: annotationSelectionHook()
-	View->>View: assignColor(annotation.styleClass)
-	View->>View: focusOnAnnotation(id)
-	View->>Anno: fitBoundsWithConstraints(id)
-```
+<!-- bespoke diagram: edit diagrams/annotation-event-flow.mmd or .hints.json, then: npx pict-renderer-graph build modules/pict/pict-section-openseadragon/docs -->
+![Annotation Event Flow](diagrams/annotation-event-flow.svg)
 
 ## File Structure
 

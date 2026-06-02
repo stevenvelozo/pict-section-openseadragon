@@ -1,0 +1,31 @@
+sequenceDiagram
+	participant App as Host Pict App
+	participant View as PictSectionOpenSeaDragon
+	participant CA as ContentAssignment
+	participant OSD as OpenSeadragon
+	participant Anno as Annotorious
+	participant Panel as AnnotationSelector
+
+	App->>View: new View(fable, options, services)
+	View->>View: Object.assign(default_configuration, options)
+	App->>View: render()
+	View->>View: onBeforeInitialize()
+	View->>CA: assignContent(template, #OpenSeaDragon-Container-Div)
+	View->>View: onAfterRender(renderable)
+	View->>CA: getElement(#OpenSeaDragon-Element)
+	View->>CA: getElement(#DrawingToolbar)
+	View->>View: build osdSettings + customConfigureViewerSettings()
+	View->>OSD: OpenSeadragon(osdSettings)
+	OSD-->>View: viewer instance
+	View->>OSD: addHandler('open', ...)
+	OSD-->>View: tiles loaded
+	View->>CA: assignContent(#ColorOverrides, generated CSS)
+	View->>CA: assignContent(#ColorPickerToolbar, color buttons)
+	View->>View: assignColor(first color)
+	alt EnableAnnotation or initial Annotations
+		View->>Anno: OpenSeadragon.Annotorious(viewer, annoSettings)
+		View->>Anno: SelectorPack + BetterPolygon + PictPack
+		View->>Anno: on('createAnnotation' / 'selectAnnotation' / ...)
+		View->>OSD: addHandler('canvas-double-click', ...)
+		View->>Panel: updateAnnotationsPanel()
+	end

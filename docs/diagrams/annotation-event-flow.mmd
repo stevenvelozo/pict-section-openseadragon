@@ -1,0 +1,26 @@
+sequenceDiagram
+	participant User
+	participant Toolbar as Annotorious Toolbar
+	participant Anno as Annotorious
+	participant View as PictSectionOpenSeaDragon
+	participant Panel as AnnotationSelector
+
+	User->>Toolbar: click shape tool (e.g. arrow)
+	Toolbar->>View: selectDrawingTool(event, 'arrow')
+	View->>Anno: setDrawingTool('arrow')
+	View->>Anno: setDrawingEnabled(true)
+
+	User->>Anno: draw on canvas
+	Anno->>View: createAnnotation(annotation, overrideID)
+	View->>View: annotationCreationHook()
+	View->>View: attach stylesheet + styleClass (color or color-hatched)
+	View->>Panel: updateAnnotationsPanel()
+	Panel->>Panel: render comments / tags list
+
+	User->>Panel: click comment
+	Panel->>View: selectAnnotation(id)
+	View->>Anno: selectAnnotation(id)
+	View->>View: annotationSelectionHook()
+	View->>View: assignColor(annotation.styleClass)
+	View->>View: focusOnAnnotation(id)
+	View->>Anno: fitBoundsWithConstraints(id)

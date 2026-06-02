@@ -1,0 +1,29 @@
+graph TB
+	subgraph "Host Pict Application"
+		PICT["Pict Instance<br/>(_Pict)"]
+		CA["ContentAssignment<br/>service"]
+	end
+	subgraph "pict-section-openseadragon"
+		OSD_VIEW["PictSectionOpenSeaDragon<br/>(source/Pict-Section-OpenSeaDragon.js)"]
+		AS_VIEW["PictSectionOpenSeaDragonAnnotationSelector<br/>(source/Pict-Section-OpenSeaDragonAnnotationSelector.js)"]
+		PICTPACK["Annotorious.PictPack<br/>(source/annotorious-plugins)"]
+	end
+	subgraph "Browser Globals"
+		OSDLIB["OpenSeadragon"]
+		ANNO["OpenSeadragon.Annotorious"]
+		SELPACK["Annotorious.SelectorPack"]
+		BP["Annotorious.BetterPolygon"]
+		TB["Annotorious.Toolbar"]
+	end
+
+	PICT -->|"addView"| OSD_VIEW
+	PICT -->|"addView"| AS_VIEW
+	OSD_VIEW -->|"uses"| CA
+	AS_VIEW -->|"uses"| CA
+	OSD_VIEW -->|"instantiates"| OSDLIB
+	OSD_VIEW -->|"instantiates"| ANNO
+	OSD_VIEW -->|"registers plugins"| SELPACK
+	OSD_VIEW -->|"registers plugins"| BP
+	OSD_VIEW -->|"registers plugins"| PICTPACK
+	OSD_VIEW -->|"mounts toolbar"| TB
+	OSD_VIEW -->|"updates panel"| AS_VIEW
