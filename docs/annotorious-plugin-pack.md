@@ -74,18 +74,8 @@ Annotations produced by this view extend the standard W3C Web Annotation format 
 
 The plugin pack has its own `package.json` and webpack config:
 
-```
-source/annotorious-plugins/
-├── package.json
-├── webpack.config.js
-├── README.md
-└── src/
-	├── index.js
-	└── arrow/
-		├── Arrow.js
-		├── ArrowTool.js
-		└── EditableArrow.js
-```
+<!-- bespoke diagram: edit diagrams/building-the-pack-from-source.mmd or .hints.json, then: npx pict-renderer-graph build modules/pict/pict-section-openseadragon/docs -->
+![Building the Pack from Source](diagrams/building-the-pack-from-source.svg)
 
 Install the pack's dependencies and run its build to produce the browser bundle:
 

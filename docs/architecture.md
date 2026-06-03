@@ -95,39 +95,8 @@ classDiagram
 
 ## File Structure
 
-```
-pict-section-openseadragon/
-├── README.md
-├── package.json
-├── source/
-│   ├── Pict-Section-OpenSeaDragon.js
-│   ├── Pict-Section-OpenSeaDragonAnnotationSelector.js
-│   ├── OpenSeaDragon-Configuration.md
-│   └── annotorious-plugins/
-│       ├── package.json
-│       ├── webpack.config.js
-│       └── src/
-│           ├── index.js
-│           └── arrow/
-│               ├── Arrow.js
-│               ├── ArrowTool.js
-│               └── EditableArrow.js
-├── example_applications/
-│   └── photo_example/
-│       ├── Simple-Image-Viewer-Application.js
-│       └── html/index.html
-└── docs/
-    ├── README.md
-    ├── _cover.md
-    ├── _sidebar.md
-    ├── _topbar.md
-    ├── quickstart.md
-    ├── architecture.md
-    ├── configuration.md
-    ├── api-reference.md
-    ├── code-snippets.md
-    └── annotorious-plugin-pack.md
-```
+<!-- bespoke diagram: edit diagrams/file-structure.mmd or .hints.json, then: npx pict-renderer-graph build modules/pict/pict-section-openseadragon/docs -->
+![File Structure](diagrams/file-structure.svg)
 
 ## View State
 
